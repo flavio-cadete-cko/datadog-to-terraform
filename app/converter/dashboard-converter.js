@@ -1,4 +1,4 @@
-import { assignmentString, block, blockList, convertFromDefinition } from "./utils.js";
+import { assignmentString, block, blockList, convertFromDefinition } from "../utils/mapping.js";
 
 const DASHBOARD = {
   layout_type: (v) => assignmentString("layout_type", v),

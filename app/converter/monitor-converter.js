@@ -1,4 +1,4 @@
-import { assignmentString, block, convertFromDefinition, map } from "./utils.js";
+import { assignmentString, block, convertFromDefinition, map } from "./utils/mapping.js";
 
 const MONITOR = {
   message: (v) => assignmentString("message", v),

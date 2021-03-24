@@ -1,5 +1,6 @@
-import { generateTerraformCode } from "./monitor-converter.js";
-import { generateDashboardTerraformCode } from "./dashboard-converter.js";
+import { generateMonitorTerraformCode } from "./converter/monitor-converter.js";
+import { generateDashboardTerraformCode } from "./converter/dashboard-converter.js";
+import { updateStatusMessage, copyResultToClipboard } from "./utils/funcionality.js"
 
 function onClick() {
   var resourceName = document.getElementById("resourceName").value;
@@ -12,7 +13,7 @@ function onClick() {
     var terraformCode;
     let parsedJson = JSON.parse(datadogJson);
     if (parsedJson.hasOwnProperty("name")) {
-      terraformCode = generateTerraformCode(resourceName, parsedJson);
+      terraformCode = generateMonitorTerraformCode(resourceName, parsedJson);
     } else {
       terraformCode = generateDashboardTerraformCode(resourceName, parsedJson);
     }
@@ -33,22 +34,6 @@ function addDomElementsForResult(terraformAlarmCode) {
   var outputWrapperDiv = document.getElementById("outputWrapper");
   outputWrapperDiv.appendChild(resultTextArea);
   outputWrapperDiv.classList.add("active");
-}
-
-function copyResultToClipboard() {
-  var copyText = document.getElementById("result");
-  copyText.select();
-  document.execCommand("copy");
-}
-
-function updateStatusMessage(message, isError) {
-  var newMessageText = isError ? "❗️" + message : "🎉" + message;
-  var statusMessageElement = document.getElementById("statusMessage");
-  statusMessageElement.textContent = newMessageText;
-  document.getElementById("convertButton").style.marginBottom = "0";
-  if (isError) {
-    statusMessageElement.style.color = "red";
-  }
 }
 
 document.getElementById("convertButton").addEventListener("click", onClick);

@@ -1,3 +1,5 @@
+'use strict';
+
 import { assignmentString, block, convertFromDefinition, map } from "./utils/mapping.js";
 
 const MONITOR = {

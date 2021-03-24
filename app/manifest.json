@@ -12,18 +12,29 @@
     "128": "icon-128.png"
   },
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "file://*/*"
   ],
   "content_scripts": [
     {
-      "matches": ["https://app.datadoghq.*/dashboard/*"],
+      "matches": ["https://app.datadoghq.com/dashboard/*", "https://app.datadoghq.eu/dashboard/*"],
       "run_at": "document_idle",
-      "js": ["./export/dashboard-to-terraform.js"]
+      "js": [
+        "./export/dashboard-to-terraform.js",
+        "./utils/funcionality.js", 
+        "./utils/export.js", 
+        "./converter/converter.js"
+      ]
     },
     {
-      "matches": ["https://app.datadoghq.*/monitors/*"],
+      "matches": ["https://app.datadoghq.com/monitors/*", "https://app.datadoghq.eu/monitors/*"],
       "run_at": "document_idle",
-      "js": ["./export/monitor-to-terraform.js"]
+      "js": [
+        "./export/monitor-to-terraform.js",
+        "./utils/funcionality.js", 
+        "./utils/export.js", 
+        "./converter/converter.js"
+      ]
     }
   ]
 }

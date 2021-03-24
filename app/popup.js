@@ -1,5 +1,4 @@
-import { generateMonitorTerraformCode } from "./converter/monitor-converter.js";
-import { generateDashboardTerraformCode } from "./converter/dashboard-converter.js";
+import { convertToTerraform } from "./converter/converter.js";
 import { updateStatusMessage, copyResultToClipboard } from "./utils/funcionality.js"
 
 function onClick() {
@@ -10,13 +9,7 @@ function onClick() {
     if (!resourceName) throw "No resource name given";
     if (!datadogJson) throw "No Datadog JSON given";
 
-    var terraformCode;
-    let parsedJson = JSON.parse(datadogJson);
-    if (parsedJson.hasOwnProperty("name")) {
-      terraformCode = generateMonitorTerraformCode(resourceName, parsedJson);
-    } else {
-      terraformCode = generateDashboardTerraformCode(resourceName, parsedJson);
-    }
+    var terraformCode = convertToTerraform(datadogJson, resourceName);
 
     addDomElementsForResult(terraformCode);
     copyResultToClipboard();

@@ -1,76 +1,35 @@
-import { generateDashboardTerraformCode } from "../converter/dashboard-converter.js";
-import { alertMessage, copyTerraformCodeToClipboard } from "./utils/funcionality.js"
+'use strict';
 
-var dataDogCopyJsonBtn = $("button[data-dd-action-name='Copy dashboard JSON'"); 
+import { createExportBtn } from "../utils/funcionality.js"
+import { convertToTerraform } from "../converter/converter.js";
+import { exportFile } from "../utils/export.js"
 
-if(dataDogCopyJsonBtn.length < 1){
-    console.error("Failed to find button 'Copy dashboard JSON'");
-    return;
-}
-
-var resultTextArea = document.createElement("textarea");
-resultTextArea.id = "result";
-resultTextArea.textContent = terraformAlarmCode;
-
-var outputWrapperDiv = document.getElementById("outputWrapper");
-outputWrapperDiv.appendChild(resultTextArea);
-outputWrapperDiv.classList.add("active");
-
-document.getElementById("convertDashboardToTerraformButton").addEventListener("click", onClick);
+let dataDogCopyJsonAction = "Copy dashboard JSON";
+let dataDogExportJsonAction = "Export dashboard JSON";
+let dataDogExportTerraformAction = "Export dashboard Terraform";
+let fileName = "terraform_dashboard";
 
 function onClick() {
-
     try {
-    
-        var datadogExportBtn = $("button[data-dd-action-name='Export'"); 
+        $(`button[data-dd-action-name='${dataDogCopyJsonAction}'`)[0].click();
 
-        if(datadogExportBtn.length < 1){
-          throw "Failed to find button 'Export'";
-        }
-
-        dataDogCopyJsonBtn[0].click();
-
-        var datadogJson = "";
-
-        // setTimeout(async() => // some trigger delay so we can test on browser console
         navigator.permissions.query({ name: 'clipboard-read' }).then(result => {
-            // If permission to read the clipboard is granted or if the user will
-            // be prompted to allow it, we proceed.
-
             if (result.state === 'granted' || result.state === 'prompt') {
                 navigator.clipboard.readText()
                     .then(datadogJson => {
-                        //my code to handle paste
-                        downloadTerraform(datadogJson)
-                        
+                        var terraformCode = convertToTerraform(datadogJson)
+                        exportFile(terraformCode, fileName)
                     })
                     .catch(err => {
                         throw 'Failed to read clipboard contents: ' + err;
                     })
             }
         });
-        // , 3000)
-
-       
     }
     catch (e) {
-        alertMessage(e);
+        alert(e);
     }
 }
 
-function downloadTerraform(datadogJson){
-    var terraformCode;
-    let parsedJson = JSON.parse(datadogJson);
-
-    terraformCode = generateDashboardTerraformCode("your_datadog_identifier", parsedJson);
-
-    copyTerraformCodeToClipboard();
-    console.log("Copied to clipboard!")
-
-    var blob = new Blob(terraformCode, {type: "text/plain"});
-    var url = URL.createObjectURL(blob);
-    chrome.downloads.download({
-      url: url,
-      filename: "your_terraform_monitor.tf"
-    });
-}
+// Main entry execute
+createExportBtn(dataDogExportJsonAction, dataDogExportTerraformAction, onClick)

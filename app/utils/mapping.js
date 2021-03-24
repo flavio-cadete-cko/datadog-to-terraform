@@ -1,3 +1,5 @@
+'use strict';
+
 function literalString(value) {
   if (typeof value === "string") {
     if (value.includes("\n")) {

@@ -1,3 +1,5 @@
+'use strict';
+
 import { assignmentString, block, blockList, convertFromDefinition } from "../utils/mapping.js";
 
 const DASHBOARD = {

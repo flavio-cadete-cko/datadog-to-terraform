@@ -1,9 +1,9 @@
 {
   "title": "DueDiligence - Shared - Business",
-  "description": "",
+  "description": "## Managed by Terraform",
   "widgets": [
     {
-      "id": 1039197738596052,
+      "id": 4960541806534627,
       "definition": {
         "title": "POST 422's",
         "type": "group",
@@ -12,53 +12,56 @@
         "layout_type": "ordered",
         "widgets": [
           {
-            "id": 6444990380447056,
+            "id": 216656526346329,
             "definition": {
-              "title": "Logs",
-              "title_size": "16",
-              "title_align": "left",
-              "type": "log_stream",
-              "indexes": ["transformation"],
-              "query": "source:due_diligence @Properties.StatusCode:422 @http.method:POST $Environment $AppGroup -@Properties.ApiUser:IntegrationTests",
-              "sort": {
-                "column": "service",
-                "order": "desc"
-              },
-              "columns": ["service", "@Properties.ApiUser", "@Properties.ErrorCodes"],
-              "show_date_column": true,
-              "show_message_column": false,
-              "message_display": "inline"
+              "type": "note",
+              "content": "Logs View to export: https://app.datadoghq.com/logs?saved_view=371021",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "show_tick": false,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
             },
             "layout": {
               "x": 0,
               "y": 0,
               "width": 7,
-              "height": 6
+              "height": 1
             }
           },
           {
-            "id": 1114304104855592,
+            "id": 3909629703995916,
             "definition": {
               "title": "Error Codes",
               "title_size": "16",
               "title_align": "left",
-              "time": {},
-              "type": "toplist",
+              "type": "query_table",
               "requests": [
                 {
+                  "cell_display_mode": ["bar"],
                   "log_query": {
                     "index": "transformation",
                     "search": {
-                      "query": "source:due_diligence @Properties.StatusCode:422 @http.method:POST $Environment $AppGroup -@Properties.ApiUser:IntegrationTests"
+                      "query": "source:due_diligence @http.method:POST $Environment $AppGroup -@Properties.ApiUser:IntegrationTests @http.status_code:422"
                     },
                     "group_by": [
                       {
-                        "facet": "@Properties.ErrorCodes",
-                        "limit": 1000,
+                        "facet": "service",
                         "sort": {
                           "order": "desc",
                           "aggregation": "count"
-                        }
+                        },
+                        "limit": 30
+                      },
+                      {
+                        "facet": "@Properties.ErrorCodes",
+                        "sort": {
+                          "order": "desc",
+                          "aggregation": "count"
+                        },
+                        "limit": 30
                       }
                     ],
                     "compute": {
@@ -66,69 +69,115 @@
                     }
                   }
                 }
-              ]
+              ],
+              "has_search_bar": "auto"
             },
             "layout": {
               "x": 7,
               "y": 0,
               "width": 5,
-              "height": 3
+              "height": 5
             }
           },
           {
-            "id": 6398915134912360,
+            "id": 897090728812110,
+            "definition": {
+              "title": "Logs",
+              "title_size": "16",
+              "title_align": "left",
+              "type": "log_stream",
+              "indexes": ["transformation"],
+              "query": "source:due_diligence @http.method:POST $Environment $AppGroup -@Properties.ApiUser:(IntegrationTests OR TestUser) @http.status_code:422",
+              "sort": {
+                "column": "service",
+                "order": "desc"
+              },
+              "columns": [
+                "service",
+                "@Properties.ApiUser",
+                "@Properties.ErrorCodes",
+                "@Properties.CorrelationId"
+              ],
+              "show_date_column": true,
+              "show_message_column": false,
+              "message_display": "inline"
+            },
+            "layout": {
+              "x": 0,
+              "y": 1,
+              "width": 7,
+              "height": 6
+            }
+          },
+          {
+            "id": 8373645716896866,
             "definition": {
               "title": "Across time",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
               "legend_layout": "horizontal",
-              "legend_columns": ["avg", "min", "max", "value", "sum"],
-              "time": {},
+              "legend_columns": ["value", "avg", "sum", "min", "max"],
               "type": "timeseries",
               "requests": [
                 {
-                  "log_query": {
-                    "index": "transformation",
-                    "search": {
-                      "query": "source:due_diligence @Properties.StatusCode:422 @http.method:POST $Environment $AppGroup -@Properties.ApiUser:IntegrationTests"
-                    },
-                    "group_by": [
-                      {
-                        "facet": "service",
-                        "limit": 10,
-                        "sort": {
-                          "order": "desc",
-                          "aggregation": "count"
-                        }
-                      }
-                    ],
-                    "compute": {
-                      "aggregation": "count"
+                  "formulas": [
+                    {
+                      "formula": "query1"
                     }
-                  },
+                  ],
+                  "response_format": "timeseries",
+                  "on_right_yaxis": false,
+                  "queries": [
+                    {
+                      "search": {
+                        "query": "source:due_diligence @http.method:POST $Environment $AppGroup -@Properties.ApiUser:IntegrationTests @http.status_code:422"
+                      },
+                      "data_source": "logs",
+                      "compute": {
+                        "interval": 604800000,
+                        "aggregation": "count"
+                      },
+                      "name": "query1",
+                      "indexes": ["transformation"],
+                      "group_by": [
+                        {
+                          "facet": "service",
+                          "sort": {
+                            "aggregation": "count",
+                            "order": "desc"
+                          },
+                          "limit": 10
+                        }
+                      ]
+                    }
+                  ],
                   "style": {
                     "palette": "dog_classic",
                     "line_type": "solid",
                     "line_width": "normal"
                   },
-                  "display_type": "line"
+                  "display_type": "bars"
                 }
               ],
               "yaxis": {
-                "scale": "linear",
-                "label": "",
                 "include_zero": true,
+                "scale": "linear",
                 "min": "auto",
                 "max": "auto"
               },
-              "markers": []
+              "markers": [
+                {
+                  "value": "y = 0",
+                  "display_type": "error dashed"
+                }
+              ]
             },
             "layout": {
               "x": 7,
-              "y": 3,
+              "y": 5,
               "width": 5,
-              "height": 3
+              "height": 2
             }
           }
         ]
@@ -151,5 +200,5 @@
   "is_read_only": false,
   "notify_list": [],
   "reflow_type": "fixed",
-  "id": "sas-d4u-bkx"
+  "id": "rb6-2y4-ipi"
 }

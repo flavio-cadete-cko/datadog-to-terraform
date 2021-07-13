@@ -3,7 +3,7 @@
 exports[`converts dashbboards correctly 1`] = `
 "resource \\"datadog_dashboard\\" \\"dashboard_1\\" {
 title = \\"DueDiligence - Shared - Business\\"
-description = \\"\\"
+description = \\"## Managed by Terraform\\"
 widget {
 group_definition {
 title = \\"POST 422's\\"
@@ -11,59 +11,86 @@ background_color = \\"vivid_yellow\\"
 show_title = true
 layout_type = \\"ordered\\"
 widget {
-log_stream_definition {
-title = \\"Logs\\"
-title_size = \\"16\\"
-title_align = \\"left\\"
-indexes = [\\"transformation\\"]
-query = <<EOF
-source:due_diligence @Properties.StatusCode:422 @http.method:POST $Environment $AppGroup -@Properties.ApiUser:IntegrationTests
-
-EOF
-sort {
-column = \\"service\\"
-order = \\"desc\\"
-}
-columns = [\\"service\\",\\"@Properties.ApiUser\\",\\"@Properties.ErrorCodes\\"]
-show_date_column = true
-show_message_column = false
-message_display = \\"inline\\"
+note_definition {
+content = \\"Logs View to export: https://app.datadoghq.com/logs?saved_view=371021\\"
+background_color = \\"white\\"
+font_size = \\"14\\"
+text_align = \\"left\\"
+show_tick = false
+tick_pos = \\"50%\\"
+tick_edge = \\"left\\"
 }
 widget_layout {
 x = 0
 y = 0
 width = 7
-height = 6
+height = 1
 }
 }
 widget {
-toplist_definition {
+query_table_definition {
 title = \\"Error Codes\\"
 title_size = \\"16\\"
 title_align = \\"left\\"
 request {
+cell_display_mode = [\\"bar\\"]
 log_query {
 index = \\"transformation\\"
-search_query = \\"source:due_diligence @Properties.StatusCode:422 @http.method:POST $Environment $AppGroup -@Properties.ApiUser:IntegrationTests\\"
+search_query = \\"source:due_diligence @http.method:POST $Environment $AppGroup -@Properties.ApiUser:IntegrationTests @http.status_code:422\\"
 group_by {
-facet = \\"@Properties.ErrorCodes\\"
-limit = 1000
+facet = \\"service\\"
 sort_query {
 order = \\"desc\\"
 aggregation = \\"count\\"
 }
+limit = 30
+}
+group_by {
+facet = \\"@Properties.ErrorCodes\\"
+sort_query {
+order = \\"desc\\"
+aggregation = \\"count\\"
+}
+limit = 30
 }
 compute_query {
 aggregation = \\"count\\"
 }
 }
 }
+has_search_bar = \\"auto\\"
 }
 widget_layout {
 x = 7
 y = 0
 width = 5
-height = 3
+height = 5
+}
+}
+widget {
+log_stream_definition {
+title = \\"Logs\\"
+title_size = \\"16\\"
+title_align = \\"left\\"
+indexes = [\\"transformation\\"]
+query = <<EOF
+source:due_diligence @http.method:POST $Environment $AppGroup -@Properties.ApiUser:(IntegrationTests OR TestUser) @http.status_code:422
+
+EOF
+sort {
+column = \\"service\\"
+order = \\"desc\\"
+}
+columns = [\\"service\\",\\"@Properties.ApiUser\\",\\"@Properties.ErrorCodes\\",\\"@Properties.CorrelationId\\"]
+show_date_column = true
+show_message_column = false
+message_display = \\"inline\\"
+}
+widget_layout {
+x = 0
+y = 1
+width = 7
+height = 6
 }
 }
 widget {
@@ -73,21 +100,35 @@ title_size = \\"16\\"
 title_align = \\"left\\"
 show_legend = true
 legend_layout = \\"horizontal\\"
-legend_columns = [\\"avg\\",\\"min\\",\\"max\\",\\"value\\",\\"sum\\"]
+legend_columns = [\\"value\\",\\"avg\\",\\"sum\\",\\"min\\",\\"max\\"]
 request {
-log_query {
-index = \\"transformation\\"
-search_query = \\"source:due_diligence @Properties.StatusCode:422 @http.method:POST $Environment $AppGroup -@Properties.ApiUser:IntegrationTests\\"
+formula {
+formula_expression  = \\"query1\\"
+}
+on_right_yaxis = false
+query {
+event_query {
+search {
+query = <<EOF
+source:due_diligence @http.method:POST $Environment $AppGroup -@Properties.ApiUser:IntegrationTests @http.status_code:422
+
+EOF
+}
+data_source = \\"logs\\"
+compute {
+interval = 604800000
+aggregation = \\"count\\"
+}
+name = \\"query1\\"
+indexes = [\\"transformation\\"]
 group_by {
 facet = \\"service\\"
-limit = 10
-sort_query {
+sort {
+aggregation = \\"count\\"
 order = \\"desc\\"
-aggregation = \\"count\\"
 }
+limit = 10
 }
-compute_query {
-aggregation = \\"count\\"
 }
 }
 style {
@@ -95,21 +136,24 @@ palette = \\"dog_classic\\"
 line_type = \\"solid\\"
 line_width = \\"normal\\"
 }
-display_type = \\"line\\"
+display_type = \\"bars\\"
 }
 yaxis {
-scale = \\"linear\\"
-label = \\"\\"
 include_zero = true
+scale = \\"linear\\"
 min = \\"auto\\"
 max = \\"auto\\"
+}
+marker {
+value = \\"y = 0\\"
+display_type = \\"error dashed\\"
 }
 }
 widget_layout {
 x = 7
-y = 3
+y = 5
 width = 5
-height = 3
+height = 2
 }
 }
 }

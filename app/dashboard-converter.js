@@ -148,6 +148,10 @@ const REQUEST = {
   limit: (v) => assignmentString("limit", v),
   order: (v) => assignmentString("order", v),
   fill: (v) => block("fill", v, assignmentString),
+  // new fields for query
+  formulas: (v) => blockList(v, "formula", (k1, v1) => convertFromDefinition(FORMULA, k1, v1)),
+  response_format: (_) => "",
+  queries: (v) => convertEventQuery(v),
 };
 
 const LOG_QUERY = {
@@ -166,6 +170,32 @@ const GROUP_BY = {
   sort: (v) => block("sort_query", v, assignmentString),
   sort_query: (v) => block("sort_query", v, assignmentString),
 };
+
+const FORMULA = {
+  formula: (v) => assignmentString("formula_expression ", v),
+};
+
+const EVENT_QUERY = {
+  data_source: (v) => assignmentString("data_source", v),
+  indexes: (v) => assignmentString("indexes", v),
+  name: (v) => assignmentString("name", v),
+  compute: (v) => block("compute", v, assignmentString),
+  group_by: (v) =>
+    blockList(v, "group_by", (k1, v1) => convertFromDefinition(EVENT_QUERY_GROUP_BY, k1, v1)),
+  search: (v) => block("search", v, assignmentString),
+};
+
+const EVENT_QUERY_GROUP_BY = {
+  facet: (v) => assignmentString("facet", v),
+  limit: (v) => assignmentString("limit", v),
+  sort: (v) => block("sort", v, assignmentString),
+};
+
+function convertEventQuery(value) {
+  return block("query", value, (_) =>
+    blockList(value, "event_query", (k1, v1) => convertFromDefinition(EVENT_QUERY, k1, v1))
+  );
+}
 
 function convertSort(v) {
   return typeof v === "string"

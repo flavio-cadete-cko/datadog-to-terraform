@@ -155,12 +155,6 @@ y = 5
 width = 5
 height = 2
 }
-widget_layout {
-x = 7
-y = 3
-width = 5
-height = 3
-}
 }
 }
 }

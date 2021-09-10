@@ -19,6 +19,19 @@ Click to enlarge:
 
 ---
 
+### CLI version
+
+1. Create your monitor or dashboard in the Datadog UI and copy the JSON.
+2. Two possibilities:
+
+- Use standard input
+  - Run `yarn convert` in the terminal
+  - Paste the JSON, terminating input with CTRL-D
+- Use a file:
+  - Save JSON to a file, say `dashboard.json`
+  - Run `yarn convert dashboard.json`
+
 ## Contributing
 
-We'd love for folks to contribute! Feel free to add your own ideas or take a look at the issues for inspiration. The [Contributing Guide](CONTRIBUTING.md) explains development setup and the release process.
+We'd love for folks to contribute! Feel free to add your own ideas or take a look at the issues for inspiration.
+The [Contributing Guide](CONTRIBUTING.md) explains development setup and the release process.

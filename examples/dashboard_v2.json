@@ -1,0 +1,271 @@
+{
+  "title": "DueDiligence - KYBD - Business",
+  "description": "",
+  "widgets": [
+    {
+      "id": 7742975828030756,
+      "definition": {
+        "title": "Kyckr Plugin",
+        "type": "group",
+        "background_color": "vivid_blue",
+        "show_title": true,
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 7388841827356786,
+            "definition": {
+              "title": "Orders Created",
+              "title_size": "16",
+              "title_align": "left",
+              "type": "query_value",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "query": "max:dd_kybd_kyckr.Create_Order{$aws_account,!result:product_price_exceeded}.rollup(count)",
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "aggregator": "sum"
+                    }
+                  ]
+                }
+              ],
+              "autoscale": true,
+              "custom_unit": " ",
+              "precision": 0
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 2,
+              "height": 1
+            }
+          },
+          {
+            "id": 773114765494798,
+            "definition": {
+              "title": "Price Exceeded ",
+              "title_size": "16",
+              "title_align": "left",
+              "type": "query_value",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "query": "max:dd_kybd_kyckr.Create_Order{$aws_account,result:product_price_exceeded}.rollup(count)",
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "aggregator": "sum"
+                    }
+                  ]
+                }
+              ],
+              "autoscale": true,
+              "custom_unit": " ",
+              "precision": 0
+            },
+            "layout": {
+              "x": 6,
+              "y": 0,
+              "width": 2,
+              "height": 1
+            }
+          },
+          {
+            "id": 7647483365084700,
+            "definition": {
+              "title": "Order Price by country",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "vertical",
+              "legend_columns": ["avg", "min", "max", "value", "sum"],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "alias": "Price",
+                      "formula": "query1"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "on_right_yaxis": false,
+                  "queries": [
+                    {
+                      "query": "avg:dd_kybd_kyckr.Create_Order{$aws_account,!result:product_price_exceeded} by {country}",
+                      "data_source": "metrics",
+                      "name": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "bars"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "label": "",
+                "min": "auto",
+                "max": "auto"
+              },
+              "markers": []
+            },
+            "layout": {
+              "x": 0,
+              "y": 1,
+              "width": 6,
+              "height": 3
+            }
+          },
+          {
+            "id": 8789979493962496,
+            "definition": {
+              "title": "Price Exceeded by country",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "vertical",
+              "legend_columns": ["avg", "max", "value", "sum", "min"],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "alias": "Price",
+                      "formula": "query1"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "on_right_yaxis": false,
+                  "queries": [
+                    {
+                      "query": "avg:dd_kybd_kyckr.Create_Order{result:product_price_exceeded,$aws_account} by {country}",
+                      "data_source": "metrics",
+                      "name": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "bars"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "label": "",
+                "min": "auto",
+                "max": "auto"
+              },
+              "markers": []
+            },
+            "layout": {
+              "x": 6,
+              "y": 1,
+              "width": 6,
+              "height": 3
+            }
+          },
+          {
+            "id": 7248095039960260,
+            "definition": {
+              "title": "Price Heat Map",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": false,
+              "time": {},
+              "type": "heatmap",
+              "yaxis": {
+                "min": "0"
+              },
+              "requests": [
+                {
+                  "q": "avg:dd_kybd_kyckr.Create_Order{aws_account:cko-dev} by {service,country}.as_count()",
+                  "style": {
+                    "palette": "dog_classic"
+                  }
+                }
+              ]
+            },
+            "layout": {
+              "x": 0,
+              "y": 4,
+              "width": 12,
+              "height": 3
+            }
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 12,
+        "height": 8
+      }
+    }
+  ],
+  "template_variables": [
+    {
+      "name": "aws_account",
+      "default": "cko-dev",
+      "prefix": "aws_account"
+    }
+  ],
+  "layout_type": "ordered",
+  "is_read_only": false,
+  "notify_list": [],
+  "template_variable_presets": [
+    {
+      "name": "Dev",
+      "template_variables": [
+        {
+          "name": "aws_account",
+          "value": "cko-dev"
+        }
+      ]
+    },
+    {
+      "name": "Prod",
+      "template_variables": []
+    },
+    {
+      "name": "QA",
+      "template_variables": [
+        {
+          "name": "aws_account",
+          "value": "cko-qa"
+        }
+      ]
+    },
+    {
+      "name": "Sandbox",
+      "template_variables": [
+        {
+          "name": "aws_account",
+          "value": "cko-sbox"
+        }
+      ]
+    }
+  ],
+  "reflow_type": "fixed",
+  "id": "qy5-bw7-2pn"
+}

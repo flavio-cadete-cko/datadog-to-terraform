@@ -1,0 +1,1359 @@
+{
+  "title": "DueDiligence - DPS - Manual",
+  "description": "## Managed by Terraform",
+  "widgets": [
+    {
+      "id": 6480292947441632,
+      "definition": {
+        "title": "Alerts & Logs",
+        "type": "group",
+        "background_color": "vivid_purple",
+        "show_title": true,
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 386891879010954,
+            "definition": {
+              "title": "Logs",
+              "title_size": "13",
+              "type": "query_value",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "search": {
+                        "query": "source:due_diligence $dd_env $app_group"
+                      },
+                      "data_source": "logs",
+                      "compute": {
+                        "aggregation": "count"
+                      },
+                      "name": "query1",
+                      "indexes": ["transformation"],
+                      "group_by": []
+                    }
+                  ]
+                }
+              ],
+              "autoscale": true,
+              "precision": 0
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 2,
+              "height": 1
+            }
+          },
+          {
+            "id": 8862365408499014,
+            "definition": {
+              "title_size": "13",
+              "type": "manage_status",
+              "summary_type": "combined",
+              "display_format": "list",
+              "color_preference": "text",
+              "hide_zero_counts": true,
+              "show_last_triggered": true,
+              "query": "tag:($monitor_env AND $app_group)",
+              "sort": "triggered,desc",
+              "count": 50,
+              "start": 0
+            },
+            "layout": {
+              "x": 2,
+              "y": 0,
+              "width": 7,
+              "height": 4
+            }
+          },
+          {
+            "id": 5983087014040922,
+            "definition": {
+              "title": "Fatals",
+              "title_size": "16",
+              "title_align": "center",
+              "type": "query_value",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "conditional_formats": [
+                    {
+                      "hide_value": false,
+                      "comparator": ">",
+                      "palette": "white_on_red",
+                      "value": 0
+                    },
+                    {
+                      "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/22/Animated_fire_by_nevit.gif",
+                      "comparator": ">=",
+                      "palette": "custom_image",
+                      "value": 10
+                    }
+                  ],
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "search": {
+                        "query": "source:due_diligence $dd_env $app_group status:emergency"
+                      },
+                      "data_source": "logs",
+                      "compute": {
+                        "aggregation": "count"
+                      },
+                      "name": "query1",
+                      "indexes": ["transformation"],
+                      "group_by": []
+                    }
+                  ]
+                }
+              ],
+              "autoscale": true,
+              "precision": 0
+            },
+            "layout": {
+              "x": 9,
+              "y": 0,
+              "width": 1,
+              "height": 1
+            }
+          },
+          {
+            "id": 3706656388260064,
+            "definition": {
+              "title": "Errors",
+              "title_size": "16",
+              "title_align": "center",
+              "type": "query_value",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "conditional_formats": [
+                    {
+                      "hide_value": false,
+                      "comparator": ">",
+                      "palette": "red_on_white",
+                      "value": 0
+                    }
+                  ],
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "search": {
+                        "query": "source:due_diligence $dd_env $app_group status:error"
+                      },
+                      "data_source": "logs",
+                      "compute": {
+                        "aggregation": "count"
+                      },
+                      "name": "query1",
+                      "indexes": ["transformation"],
+                      "group_by": []
+                    }
+                  ]
+                }
+              ],
+              "autoscale": true,
+              "precision": 0
+            },
+            "layout": {
+              "x": 10,
+              "y": 0,
+              "width": 1,
+              "height": 1
+            }
+          },
+          {
+            "id": 5350563606705178,
+            "definition": {
+              "title": "Warnings",
+              "title_size": "16",
+              "title_align": "center",
+              "type": "query_value",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "conditional_formats": [
+                    {
+                      "hide_value": false,
+                      "comparator": ">",
+                      "palette": "yellow_on_white",
+                      "value": 0
+                    }
+                  ],
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "search": {
+                        "query": "source:due_diligence $dd_env $app_group status:warn"
+                      },
+                      "data_source": "logs",
+                      "compute": {
+                        "aggregation": "count"
+                      },
+                      "name": "query1",
+                      "indexes": ["transformation"],
+                      "group_by": []
+                    }
+                  ]
+                }
+              ],
+              "autoscale": true,
+              "precision": 0
+            },
+            "layout": {
+              "x": 11,
+              "y": 0,
+              "width": 1,
+              "height": 1
+            }
+          },
+          {
+            "id": 5101749114792344,
+            "definition": {
+              "title": "Alerts Triggered",
+              "title_size": "13",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": ["avg", "min", "max", "value", "sum"],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "on_right_yaxis": false,
+                  "queries": [
+                    {
+                      "search": {
+                        "query": "$app_group $monitor_env"
+                      },
+                      "data_source": "logs",
+                      "compute": {
+                        "aggregation": "count"
+                      },
+                      "name": "query1",
+                      "indexes": ["*"],
+                      "group_by": [
+                        {
+                          "facet": "@evt.name",
+                          "sort": {
+                            "aggregation": "count",
+                            "order": "desc"
+                          },
+                          "limit": 10
+                        }
+                      ]
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "bars"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "min": "auto",
+                "max": "auto"
+              },
+              "markers": []
+            },
+            "layout": {
+              "x": 0,
+              "y": 1,
+              "width": 2,
+              "height": 3
+            }
+          },
+          {
+            "id": 7103544521603030,
+            "definition": {
+              "title": "StatusCode >= 400",
+              "title_size": "13",
+              "type": "toplist",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1",
+                      "limit": {
+                        "count": 10,
+                        "order": "desc"
+                      }
+                    }
+                  ],
+                  "conditional_formats": [
+                    {
+                      "hide_value": false,
+                      "comparator": ">",
+                      "palette": "yellow_on_white",
+                      "value": 0
+                    }
+                  ],
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "search": {
+                        "query": "source:due_diligence $dd_env $app_group @http.status_code:>400"
+                      },
+                      "data_source": "logs",
+                      "compute": {
+                        "aggregation": "count"
+                      },
+                      "name": "query1",
+                      "indexes": ["transformation"],
+                      "group_by": [
+                        {
+                          "facet": "@Properties.StatusCode",
+                          "sort": {
+                            "aggregation": "count",
+                            "order": "desc"
+                          },
+                          "limit": 10
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "layout": {
+              "x": 9,
+              "y": 1,
+              "width": 3,
+              "height": 3
+            }
+          },
+          {
+            "id": 4771061184208086,
+            "definition": {
+              "title": "Errors",
+              "title_size": "16",
+              "type": "log_stream",
+              "indexes": ["transformation"],
+              "query": "source:due_diligence status:(error OR emergency) $dd_env $app_group",
+              "sort": {
+                "column": "time",
+                "order": "desc"
+              },
+              "columns": ["service"],
+              "show_date_column": true,
+              "show_message_column": true,
+              "message_display": "expanded-md"
+            },
+            "layout": {
+              "x": 0,
+              "y": 4,
+              "width": 4,
+              "height": 3
+            }
+          },
+          {
+            "id": 558025997747856,
+            "definition": {
+              "title": "Error logs by Service",
+              "title_size": "13",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": ["value", "avg", "sum", "max"],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "on_right_yaxis": false,
+                  "queries": [
+                    {
+                      "search": {
+                        "query": "source:due_diligence status:(error OR emergency) $dd_env $app_group"
+                      },
+                      "data_source": "logs",
+                      "compute": {
+                        "aggregation": "count"
+                      },
+                      "name": "query1",
+                      "indexes": ["transformation"],
+                      "group_by": [
+                        {
+                          "facet": "service",
+                          "sort": {
+                            "aggregation": "count",
+                            "order": "desc"
+                          },
+                          "limit": 10
+                        }
+                      ]
+                    }
+                  ],
+                  "style": {
+                    "palette": "warm"
+                  },
+                  "display_type": "bars"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "min": "auto",
+                "max": "auto"
+              },
+              "markers": []
+            },
+            "layout": {
+              "x": 4,
+              "y": 4,
+              "width": 5,
+              "height": 3
+            }
+          },
+          {
+            "id": 6138406059585510,
+            "definition": {
+              "title": "ApiUser",
+              "title_size": "13",
+              "type": "toplist",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1",
+                      "limit": {
+                        "count": 10,
+                        "order": "desc"
+                      }
+                    }
+                  ],
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "search": {
+                        "query": "source:due_diligence $dd_env $app_group @http.method:POST"
+                      },
+                      "data_source": "logs",
+                      "compute": {
+                        "aggregation": "count"
+                      },
+                      "name": "query1",
+                      "indexes": ["*"],
+                      "group_by": [
+                        {
+                          "facet": "@CustomerId",
+                          "sort": {
+                            "aggregation": "count",
+                            "order": "desc"
+                          },
+                          "limit": 10
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "layout": {
+              "x": 9,
+              "y": 4,
+              "width": 3,
+              "height": 3
+            }
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 12,
+        "height": 8
+      }
+    },
+    {
+      "id": 4395270862637800,
+      "definition": {
+        "title": "Metrics",
+        "type": "group",
+        "background_color": "vivid_yellow",
+        "show_title": true,
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 5269652619142302,
+            "definition": {
+              "type": "note",
+              "content": "API Requests",
+              "background_color": "blue",
+              "font_size": "18",
+              "text_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "right",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 1,
+              "height": 2
+            }
+          },
+          {
+            "id": 3165640558777866,
+            "definition": {
+              "title": "Request Rate",
+              "title_size": "13",
+              "show_legend": true,
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "max:checkout.http_request{$dd_env,$app_group,http-request-type:inbound,route-name:*} by {route-name}.as_count()",
+                  "on_right_yaxis": false,
+                  "style": {
+                    "palette": "purple",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "bars"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "min": "auto",
+                "max": "auto"
+              }
+            },
+            "layout": {
+              "x": 1,
+              "y": 0,
+              "width": 3,
+              "height": 2
+            }
+          },
+          {
+            "id": 3387201541141858,
+            "definition": {
+              "title": "Requests",
+              "title_size": "13",
+              "type": "query_table",
+              "requests": [
+                {
+                  "q": "exclude_null(sum:checkout.http_request_latency{$dd_env AND $app_group AND http-request-type:inbound AND NOT (http-method:get AND $request_path)} by {http-status-code,http-method,request-path}.rollup(max, 10))",
+                  "aggregator": "avg",
+                  "cell_display_mode": ["number"],
+                  "alias": "AVG (MS)"
+                },
+                {
+                  "aggregator": "sum",
+                  "cell_display_mode": ["number"],
+                  "q": "sum:checkout.http_request{$dd_env AND $app_group AND http-request-type:inbound AND NOT (http-method:get AND $request_path)} by {http-status-code,http-method,request-path}.as_count()",
+                  "alias": "Requests",
+                  "limit": 10,
+                  "order": "desc"
+                }
+              ],
+              "custom_links": [
+                {
+                  "link": "https://app.datadoghq.com/logs?cols=env%2Cservice%2C%40Properties.CheckId&index=transformation&live=false&messageDisplay=inline&query=env%3A{{$env.value}}%20appgroup%3A{{$app_group.value}}%20%40http.method%3APOST",
+                  "label": "Logs - POST"
+                },
+                {
+                  "link": "https://app.datadoghq.com/logs?cols=env%2Cservice%2C%40Properties.CheckId&index=transformation&live=false&messageDisplay=inline&query=env%3A{{$env.value}}%20appgroup%3A{{$app_group.value}}%20%40http.method%3AGET",
+                  "label": "Logs - GET"
+                }
+              ]
+            },
+            "layout": {
+              "x": 4,
+              "y": 0,
+              "width": 5,
+              "height": 2
+            }
+          },
+          {
+            "id": 3352044810317324,
+            "definition": {
+              "title": "Request Response Latency (ms)",
+              "title_size": "13",
+              "show_legend": true,
+              "legend_layout": "horizontal",
+              "legend_columns": ["value", "avg", "sum", "min", "max"],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "max:checkout.http_request_latency{$dd_env,$app_group,http-request-type:inbound,route-name:*} by {route-name}.rollup(max, 10)",
+                  "on_right_yaxis": false,
+                  "metadata": [
+                    {
+                      "expression": "max:checkout.http_request_latency{$dd_env,$app_group,http-request-type:inbound,route-name:*} by {route-name}.rollup(max, 10)",
+                      "alias_name": "max"
+                    }
+                  ],
+                  "style": {
+                    "palette": "purple",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "bars"
+                }
+              ],
+              "yaxis": {
+                "include_zero": false
+              }
+            },
+            "layout": {
+              "x": 9,
+              "y": 0,
+              "width": 3,
+              "height": 2
+            }
+          },
+          {
+            "id": 7470481006891414,
+            "definition": {
+              "type": "note",
+              "content": "Runtime",
+              "background_color": "blue",
+              "font_size": "18",
+              "text_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "right",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 2,
+              "width": 1,
+              "height": 2
+            }
+          },
+          {
+            "id": 1005745153027908,
+            "definition": {
+              "title": "Large Object Heap",
+              "title_size": "13",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": ["value", "avg", "sum", "max"],
+              "time": {
+                "live_span": "1h"
+              },
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "avg:system.runtime.loh_size{$dd_env,$app_group} by {application}.as_count()",
+                  "on_right_yaxis": false,
+                  "metadata": [
+                    {
+                      "expression": "avg:system.runtime.loh_size{$dd_env,$app_group} by {application}.as_count()",
+                      "alias_name": "LOH"
+                    }
+                  ],
+                  "style": {
+                    "palette": "cool",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "min": "auto",
+                "max": "auto"
+              }
+            },
+            "layout": {
+              "x": 1,
+              "y": 2,
+              "width": 3,
+              "height": 2
+            }
+          },
+          {
+            "id": 6173330766742488,
+            "definition": {
+              "title": "Thread Count",
+              "title_size": "13",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": ["value", "avg", "sum", "max"],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "avg:system.runtime.threadpool_thread_count{$dd_env,$app_group} by {application}.as_rate()",
+                  "on_right_yaxis": false,
+                  "metadata": [
+                    {
+                      "expression": "avg:system.runtime.threadpool_thread_count{$dd_env,$app_group} by {application}.as_rate()",
+                      "alias_name": "Threads"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "min": "auto",
+                "max": "auto"
+              }
+            },
+            "layout": {
+              "x": 4,
+              "y": 2,
+              "width": 5,
+              "height": 2
+            }
+          },
+          {
+            "id": 3918354520604282,
+            "definition": {
+              "title": "Generation 2 GC",
+              "title_size": "13",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": ["value", "avg", "sum", "max"],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "q": "sum:system.runtime.gen_2_gc_count{$app_group,$dd_env} by {application}",
+                  "on_right_yaxis": false,
+                  "metadata": [
+                    {
+                      "expression": "sum:system.runtime.gen_2_gc_count{$app_group,$dd_env} by {application}",
+                      "alias_name": "Gen 2"
+                    }
+                  ],
+                  "style": {
+                    "palette": "warm",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "min": "auto",
+                "max": "auto"
+              }
+            },
+            "layout": {
+              "x": 9,
+              "y": 2,
+              "width": 3,
+              "height": 2
+            }
+          },
+          {
+            "id": 4691461766016140,
+            "definition": {
+              "type": "note",
+              "content": "Heartbeat ",
+              "background_color": "blue",
+              "font_size": "18",
+              "text_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "right",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 4,
+              "width": 1,
+              "height": 2
+            }
+          },
+          {
+            "id": 2579281571528402,
+            "definition": {
+              "title": " ",
+              "title_size": "13",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": ["avg", "min", "max", "value", "sum"],
+              "time": {
+                "live_span": "1d"
+              },
+              "type": "timeseries",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "moving_rollup(query1, 300, \"max\")",
+                      "alias": "Healthy"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "on_right_yaxis": false,
+                  "queries": [
+                    {
+                      "query": "avg:checkout.due_diligence_health_probe_healthy{$dd_env,$app_group} by {application}.as_count()",
+                      "data_source": "metrics",
+                      "name": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                }
+              ],
+              "yaxis": {
+                "include_zero": false,
+                "min": "0"
+              },
+              "markers": [
+                {
+                  "label": " Healthy ",
+                  "value": "y = 1",
+                  "display_type": "ok bold"
+                },
+                {
+                  "value": "0 < y < 1",
+                  "display_type": "error dashed"
+                }
+              ]
+            },
+            "layout": {
+              "x": 1,
+              "y": 4,
+              "width": 3,
+              "height": 2
+            }
+          },
+          {
+            "id": 7728041989957240,
+            "definition": {
+              "title": " ",
+              "title_size": "13",
+              "time": {
+                "live_span": "1d"
+              },
+              "type": "query_table",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "alias": "Healthy",
+                      "conditional_formats": [
+                        {
+                          "palette": "black_on_light_green",
+                          "hide_value": false,
+                          "value": 0,
+                          "comparator": ">"
+                        }
+                      ],
+                      "limit": {
+                        "count": 10,
+                        "order": "desc"
+                      },
+                      "formula": "default_zero(query1)"
+                    },
+                    {
+                      "alias": "Unhealthy",
+                      "conditional_formats": [
+                        {
+                          "palette": "black_on_light_yellow",
+                          "hide_value": false,
+                          "value": 0,
+                          "comparator": ">"
+                        }
+                      ],
+                      "formula": "default_zero(query2)"
+                    },
+                    {
+                      "alias": "Degraded",
+                      "conditional_formats": [
+                        {
+                          "palette": "black_on_light_red",
+                          "hide_value": false,
+                          "value": 0,
+                          "comparator": ">"
+                        }
+                      ],
+                      "formula": "default_zero(query3)"
+                    }
+                  ],
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "query": "max:checkout.due_diligence_health_probe_healthy{$dd_env,$app_group} by {application}.as_count()",
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "aggregator": "last"
+                    },
+                    {
+                      "query": "max:checkout.due_diligence_health_probe_unhealthy{$dd_env,$app_group} by {application}.as_count()",
+                      "data_source": "metrics",
+                      "name": "query2",
+                      "aggregator": "last"
+                    },
+                    {
+                      "query": "max:checkout.due_diligence_health_probe_degraded{$dd_env,$app_group} by {application}.as_count()",
+                      "data_source": "metrics",
+                      "name": "query3",
+                      "aggregator": "last"
+                    }
+                  ]
+                }
+              ],
+              "has_search_bar": "auto"
+            },
+            "layout": {
+              "x": 4,
+              "y": 4,
+              "width": 5,
+              "height": 2
+            }
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 8,
+        "width": 12,
+        "height": 7,
+        "is_column_break": true
+      }
+    },
+    {
+      "id": 410442472585232,
+      "definition": {
+        "title": "Infra (AWS) - ECS Services",
+        "type": "group",
+        "background_color": "vivid_orange",
+        "show_title": true,
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 4925922502211674,
+            "definition": {
+              "title": "Instances",
+              "title_size": "13",
+              "type": "query_table",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "alias": "Running",
+                      "conditional_formats": [
+                        {
+                          "palette": "green_on_white",
+                          "hide_value": false,
+                          "value": 1,
+                          "comparator": ">="
+                        },
+                        {
+                          "palette": "white_on_red",
+                          "hide_value": false,
+                          "value": 1,
+                          "comparator": "<"
+                        }
+                      ],
+                      "limit": {
+                        "count": 10,
+                        "order": "desc"
+                      },
+                      "formula": "query1"
+                    },
+                    {
+                      "alias": "Desired",
+                      "conditional_formats": [
+                        {
+                          "palette": "custom_bg",
+                          "comparator": ">",
+                          "custom_bg_color": "#033023",
+                          "value": 0,
+                          "hide_value": false,
+                          "custom_fg_color": "#3b1212"
+                        }
+                      ],
+                      "formula": "query2"
+                    },
+                    {
+                      "alias": "Pending",
+                      "conditional_formats": [
+                        {
+                          "custom_bg_color": "#32023b",
+                          "hide_value": false,
+                          "palette": "yellow_on_white",
+                          "value": 0,
+                          "comparator": ">"
+                        },
+                        {
+                          "palette": "custom_bg",
+                          "hide_value": false,
+                          "value": 0,
+                          "comparator": "<="
+                        }
+                      ],
+                      "formula": "query3"
+                    }
+                  ],
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "query": "min:aws.ecs.service.running{$aws_env,$service_name} by {servicename}",
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "aggregator": "last"
+                    },
+                    {
+                      "query": "min:aws.ecs.service.desired{$aws_env,$service_name} by {servicename}",
+                      "data_source": "metrics",
+                      "name": "query2",
+                      "aggregator": "last"
+                    },
+                    {
+                      "query": "min:aws.ecs.service.pending{$aws_env,$service_name} by {servicename}",
+                      "data_source": "metrics",
+                      "name": "query3",
+                      "aggregator": "last"
+                    }
+                  ]
+                }
+              ],
+              "has_search_bar": "auto"
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 4,
+              "height": 2
+            }
+          },
+          {
+            "id": 7191764060179652,
+            "definition": {
+              "title": "CPU Utilization",
+              "title_size": "13",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": ["value", "avg", "sum", "max"],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "on_right_yaxis": false,
+                  "queries": [
+                    {
+                      "query": "avg:aws.ecs.service.cpuutilization{$aws_env,$service_name} by {servicename}",
+                      "data_source": "metrics",
+                      "name": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                },
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "on_right_yaxis": false,
+                  "queries": [
+                    {
+                      "query": "max:aws.ecs.service.cpuutilization.maximum{$aws_env,$service_name} by {servicename}",
+                      "data_source": "metrics",
+                      "name": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "grey",
+                    "line_type": "dashed",
+                    "line_width": "thin"
+                  },
+                  "display_type": "line"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "min": "auto",
+                "max": "auto"
+              },
+              "markers": []
+            },
+            "layout": {
+              "x": 4,
+              "y": 0,
+              "width": 4,
+              "height": 4
+            }
+          },
+          {
+            "id": 5652587079269270,
+            "definition": {
+              "title": "Memory Utilization",
+              "title_size": "13",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": ["avg", "min", "max", "value", "sum"],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "on_right_yaxis": false,
+                  "queries": [
+                    {
+                      "query": "avg:aws.ecs.service.memory_utilization{$aws_env,$service_name} by {servicename}",
+                      "data_source": "metrics",
+                      "name": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "min": "auto",
+                "max": "auto"
+              },
+              "markers": []
+            },
+            "layout": {
+              "x": 8,
+              "y": 0,
+              "width": 4,
+              "height": 4
+            }
+          },
+          {
+            "id": 8955495983032588,
+            "definition": {
+              "title": " Running Tasks",
+              "title_size": "13",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": ["value", "avg", "sum", "max"],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "on_right_yaxis": false,
+                  "queries": [
+                    {
+                      "query": "min:aws.ecs.service.running{$aws_env,$service_name} by {servicename}",
+                      "data_source": "metrics",
+                      "name": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear",
+                "min": "auto",
+                "max": "auto"
+              },
+              "markers": []
+            },
+            "layout": {
+              "x": 0,
+              "y": 2,
+              "width": 4,
+              "height": 2
+            }
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 15,
+        "width": 12,
+        "height": 5
+      }
+    }
+  ],
+  "template_variables": [
+    {
+      "name": "dd_env",
+      "default": "prod",
+      "prefix": "env",
+      "available_values": []
+    },
+    {
+      "name": "app_group",
+      "default": "dd-dps",
+      "prefix": "appgroup",
+      "available_values": []
+    },
+    {
+      "name": "aws_env",
+      "default": "prod",
+      "prefix": "environment",
+      "available_values": []
+    },
+    {
+      "name": "monitor_env",
+      "default": "prod",
+      "prefix": "monitor_env",
+      "available_values": []
+    },
+    {
+      "name": "aws_account",
+      "default": "cko-prod",
+      "prefix": "aws_account",
+      "available_values": []
+    },
+    {
+      "name": "request_path",
+      "default": "/dps",
+      "prefix": "request-path",
+      "available_values": []
+    },
+    {
+      "name": "service_name",
+      "default": "dd-dps*",
+      "prefix": "servicename",
+      "available_values": []
+    }
+  ],
+  "layout_type": "ordered",
+  "is_read_only": false,
+  "notify_list": [],
+  "template_variable_presets": [
+    {
+      "name": "Dev",
+      "template_variables": [
+        {
+          "name": "dd_env",
+          "value": "dev"
+        },
+        {
+          "name": "aws_env",
+          "value": "dev"
+        },
+        {
+          "name": "monitor_env",
+          "value": "dev"
+        },
+        {
+          "name": "aws_account",
+          "value": "cko-dev"
+        }
+      ]
+    },
+    {
+      "name": "Prod",
+      "template_variables": []
+    },
+    {
+      "name": "QA",
+      "template_variables": [
+        {
+          "name": "dd_env",
+          "value": "qa"
+        },
+        {
+          "name": "aws_env",
+          "value": "qa"
+        },
+        {
+          "name": "monitor_env",
+          "value": "qa"
+        },
+        {
+          "name": "aws_account",
+          "value": "cko-qa"
+        }
+      ]
+    },
+    {
+      "name": "Sandbox",
+      "template_variables": [
+        {
+          "name": "dd_env",
+          "value": "sandbox"
+        },
+        {
+          "name": "aws_env",
+          "value": "sandbox"
+        },
+        {
+          "name": "monitor_env",
+          "value": "sandbox"
+        },
+        {
+          "name": "aws_account",
+          "value": "cko-sbox"
+        }
+      ]
+    }
+  ],
+  "reflow_type": "fixed",
+  "id": "h53-j2d-yf8"
+}

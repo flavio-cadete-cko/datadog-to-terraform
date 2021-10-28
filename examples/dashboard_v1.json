@@ -3,7 +3,7 @@
   "description": "## Managed by Terraform",
   "widgets": [
     {
-      "id": 4960541806534627,
+      "id": 1980131818773601,
       "definition": {
         "title": "POST 422's",
         "type": "group",
@@ -12,7 +12,7 @@
         "layout_type": "ordered",
         "widgets": [
           {
-            "id": 216656526346329,
+            "id": 6313570965162426,
             "definition": {
               "type": "note",
               "content": "Logs View to export: https://app.datadoghq.com/logs?saved_view=371021",
@@ -32,7 +32,7 @@
             }
           },
           {
-            "id": 3909629703995916,
+            "id": 1591925093737813,
             "definition": {
               "title": "Error Codes",
               "title_size": "16",
@@ -44,22 +44,22 @@
                   "log_query": {
                     "index": "transformation",
                     "search": {
-                      "query": "source:due_diligence @http.method:POST $Environment $AppGroup -@Properties.ApiUser:IntegrationTests @http.status_code:422"
+                      "query": "source:due_diligence @http.status_code:422 @http.method:POST $Environment $AppGroup -@Properties.ApiUser:(IntegrationTests OR TestUser)"
                     },
                     "group_by": [
                       {
                         "facet": "service",
                         "sort": {
-                          "order": "desc",
-                          "aggregation": "count"
+                          "aggregation": "count",
+                          "order": "desc"
                         },
                         "limit": 30
                       },
                       {
                         "facet": "@Properties.ErrorCodes",
                         "sort": {
-                          "order": "desc",
-                          "aggregation": "count"
+                          "aggregation": "count",
+                          "order": "desc"
                         },
                         "limit": 30
                       }
@@ -80,14 +80,14 @@
             }
           },
           {
-            "id": 897090728812110,
+            "id": 1854905264885868,
             "definition": {
               "title": "Logs",
               "title_size": "16",
               "title_align": "left",
               "type": "log_stream",
               "indexes": ["transformation"],
-              "query": "source:due_diligence @http.method:POST $Environment $AppGroup -@Properties.ApiUser:(IntegrationTests OR TestUser) @http.status_code:422",
+              "query": "source:due_diligence @http.status_code:422 @http.method:POST $Environment $AppGroup -@Properties.ApiUser:(IntegrationTests OR TestUser)\n",
               "sort": {
                 "column": "service",
                 "order": "desc"
@@ -110,7 +110,7 @@
             }
           },
           {
-            "id": 8373645716896866,
+            "id": 8728410398131859,
             "definition": {
               "title": "Across time",
               "title_size": "16",
@@ -131,7 +131,7 @@
                   "queries": [
                     {
                       "search": {
-                        "query": "source:due_diligence @http.method:POST $Environment $AppGroup -@Properties.ApiUser:IntegrationTests @http.status_code:422"
+                        "query": "source:due_diligence @http.status_code:422 @http.method:POST $Environment $AppGroup -@Properties.ApiUser:(IntegrationTests OR TestUser)\n"
                       },
                       "data_source": "logs",
                       "compute": {
@@ -181,6 +181,12 @@
             }
           }
         ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 12,
+        "height": 8
       }
     }
   ],
@@ -188,12 +194,14 @@
     {
       "name": "AppGroup",
       "default": "*",
-      "prefix": "appgroup"
+      "prefix": "appgroup",
+      "available_values": []
     },
     {
       "name": "Environment",
       "default": "prod",
-      "prefix": "env"
+      "prefix": "env",
+      "available_values": []
     }
   ],
   "layout_type": "ordered",

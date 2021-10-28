@@ -45,6 +45,7 @@ const EVENT_QUERY_GROUP_BY = {
 
 const FORMULA = {
   alias: (v) => assignmentString("alias", v),
+  conditional_formats: (v) => blockList(v, "conditional_formats", assignmentString),
   formula: (v) => assignmentString("formula_expression ", v),
   limit: (v) => block("limit", v, (k1, v1) => convertFromDefinition(FORMULA_LIMIT, k1, v1)),
 };

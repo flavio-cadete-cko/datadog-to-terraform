@@ -1,17 +1,22 @@
 import { generateDashboardTerraformCode } from "../app/dashboard-converter";
-import dashboardData from "../examples/dashboard.json";
-import dashboard2Data from "../examples/dashboard_v2.json";
+import dashboardv1 from "../examples/dashboard_v1.json";
+import dashboardv2 from "../examples/dashboard_v2.json";
+import dashboardv3 from "../examples/dashboard_v3.json";
 import screenboardData from "../examples/screenboard.json";
 import timeboardData from "../examples/timeboard.json";
 import dashboardWithGroupData from "../examples/timeboard-with-group.json";
 import badDashboardData from "../examples/bad-dashboard.json";
 
-it("converts dashbboards correctly", () => {
-  expect(generateDashboardTerraformCode("dashboard_1", dashboardData)).toMatchSnapshot();
+it("converts dashbboards correctly v1", () => {
+  expect(generateDashboardTerraformCode("dashboard_1", dashboardv1)).toMatchSnapshot();
 });
 
-it("converts dashbboards correctly", () => {
-  expect(generateDashboardTerraformCode("dashboard_2", dashboard2Data)).toMatchSnapshot();
+it("converts dashbboards correctly v2", () => {
+  expect(generateDashboardTerraformCode("dashboard_2", dashboardv2)).toMatchSnapshot();
+});
+
+it("converts dashbboards correctly v3", () => {
+  expect(generateDashboardTerraformCode("dashboard_dps", dashboardv3)).toMatchSnapshot();
 });
 
 it("converts screenboards correctly", () => {

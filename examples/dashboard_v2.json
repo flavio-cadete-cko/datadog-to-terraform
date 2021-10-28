@@ -1,9 +1,9 @@
 {
   "title": "DueDiligence - KYBD - Business",
-  "description": "",
+  "description": "## Managed by Terraform",
   "widgets": [
     {
-      "id": 7742975828030756,
+      "id": 2638192348161678,
       "definition": {
         "title": "Kyckr Plugin",
         "type": "group",
@@ -12,7 +12,7 @@
         "layout_type": "ordered",
         "widgets": [
           {
-            "id": 7388841827356786,
+            "id": 162901303103375,
             "definition": {
               "title": "Orders Created",
               "title_size": "16",
@@ -28,10 +28,10 @@
                   "response_format": "scalar",
                   "queries": [
                     {
-                      "query": "max:dd_kybd_kyckr.Create_Order{$aws_account,!result:product_price_exceeded}.rollup(count)",
+                      "aggregator": "sum",
                       "data_source": "metrics",
                       "name": "query1",
-                      "aggregator": "sum"
+                      "query": "max:dd_kybd_kyckr.Create_Order{$aws_account,result:order_created}.rollup(count)\n"
                     }
                   ]
                 }
@@ -48,7 +48,7 @@
             }
           },
           {
-            "id": 773114765494798,
+            "id": 8156365161031634,
             "definition": {
               "title": "Price Exceeded ",
               "title_size": "16",
@@ -64,10 +64,10 @@
                   "response_format": "scalar",
                   "queries": [
                     {
-                      "query": "max:dd_kybd_kyckr.Create_Order{$aws_account,result:product_price_exceeded}.rollup(count)",
+                      "aggregator": "sum",
                       "data_source": "metrics",
                       "name": "query1",
-                      "aggregator": "sum"
+                      "query": "max:dd_kybd_kyckr.Create_Order{$aws_account,result:product_price_exceeded}.rollup(count)\n\n"
                     }
                   ]
                 }
@@ -84,14 +84,14 @@
             }
           },
           {
-            "id": 7647483365084700,
+            "id": 1843303865842176,
             "definition": {
               "title": "Order Price by country",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
               "legend_layout": "vertical",
-              "legend_columns": ["avg", "min", "max", "value", "sum"],
+              "legend_columns": ["value", "avg", "sum", "min", "max"],
               "type": "timeseries",
               "requests": [
                 {
@@ -105,7 +105,7 @@
                   "on_right_yaxis": false,
                   "queries": [
                     {
-                      "query": "avg:dd_kybd_kyckr.Create_Order{$aws_account,!result:product_price_exceeded} by {country}",
+                      "query": "avg:dd_kybd_kyckr.Create_Order{$aws_account,result:order_created} by {country}\n\n",
                       "data_source": "metrics",
                       "name": "query1"
                     }
@@ -121,11 +121,9 @@
               "yaxis": {
                 "include_zero": true,
                 "scale": "linear",
-                "label": "",
                 "min": "auto",
                 "max": "auto"
-              },
-              "markers": []
+              }
             },
             "layout": {
               "x": 0,
@@ -135,14 +133,14 @@
             }
           },
           {
-            "id": 8789979493962496,
+            "id": 8647184676552254,
             "definition": {
               "title": "Price Exceeded by country",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
               "legend_layout": "vertical",
-              "legend_columns": ["avg", "max", "value", "sum", "min"],
+              "legend_columns": ["value", "avg", "sum", "min", "max"],
               "type": "timeseries",
               "requests": [
                 {
@@ -156,7 +154,7 @@
                   "on_right_yaxis": false,
                   "queries": [
                     {
-                      "query": "avg:dd_kybd_kyckr.Create_Order{result:product_price_exceeded,$aws_account} by {country}",
+                      "query": "avg:dd_kybd_kyckr.Create_Order{$aws_account,result:product_price_exceeded} by {country}\n\n",
                       "data_source": "metrics",
                       "name": "query1"
                     }
@@ -172,11 +170,9 @@
               "yaxis": {
                 "include_zero": true,
                 "scale": "linear",
-                "label": "",
                 "min": "auto",
                 "max": "auto"
-              },
-              "markers": []
+              }
             },
             "layout": {
               "x": 6,
@@ -186,20 +182,20 @@
             }
           },
           {
-            "id": 7248095039960260,
+            "id": 2213998516914984,
             "definition": {
               "title": "Price Heat Map",
               "title_size": "16",
               "title_align": "left",
               "show_legend": false,
-              "time": {},
               "type": "heatmap",
               "yaxis": {
+                "include_zero": false,
                 "min": "0"
               },
               "requests": [
                 {
-                  "q": "avg:dd_kybd_kyckr.Create_Order{aws_account:cko-dev} by {service,country}.as_count()",
+                  "q": "avg:dd_kybd_kyckr.Create_Order{$aws_account} by {service,country}.as_count()",
                   "style": {
                     "palette": "dog_classic"
                   }
@@ -226,8 +222,9 @@
   "template_variables": [
     {
       "name": "aws_account",
-      "default": "cko-dev",
-      "prefix": "aws_account"
+      "default": "cko-prod",
+      "prefix": "aws_account",
+      "available_values": []
     }
   ],
   "layout_type": "ordered",
@@ -267,5 +264,5 @@
     }
   ],
   "reflow_type": "fixed",
-  "id": "qy5-bw7-2pn"
+  "id": "dpr-x9u-b5p"
 }

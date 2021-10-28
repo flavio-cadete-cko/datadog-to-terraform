@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`converts dashbboards correctly 1`] = `
+exports[`converts dashbboards correctly v1 1`] = `
 "resource \\"datadog_dashboard\\" \\"dashboard_1\\" {
 title = \\"DueDiligence - Shared - Business\\"
 description = \\"## Managed by Terraform\\"
@@ -60,7 +60,7 @@ order = \\"desc\\"
 }
 }
 index = \\"transformation\\"
-search_query = \\"source:due_diligence @http.method:POST $Environment $AppGroup -@Properties.ApiUser:IntegrationTests @http.status_code:422\\"
+search_query = \\"source:due_diligence @http.status_code:422 @http.method:POST $Environment $AppGroup -@Properties.ApiUser:(IntegrationTests OR TestUser)\\"
 }
 }
 title = \\"Error Codes\\"
@@ -81,7 +81,7 @@ columns = [\\"service\\",\\"@Properties.ApiUser\\",\\"@Properties.ErrorCodes\\",
 indexes = [\\"transformation\\"]
 message_display = \\"inline\\"
 query = <<EOF
-source:due_diligence @http.method:POST $Environment $AppGroup -@Properties.ApiUser:(IntegrationTests OR TestUser) @http.status_code:422
+source:due_diligence @http.status_code:422 @http.method:POST $Environment $AppGroup -@Properties.ApiUser:(IntegrationTests OR TestUser)
 
 EOF
 show_date_column = true
@@ -156,14 +156,22 @@ y = 5
 }
 }
 }
+widget_layout {
+height = 8
+width = 12
+x = 0
+y = 0
+}
 }
 
 template_variable {
+available_values = []
 default = \\"*\\"
 name = \\"AppGroup\\"
 prefix = \\"appgroup\\"
 }
 template_variable {
+available_values = []
 default = \\"prod\\"
 name = \\"Environment\\"
 prefix = \\"env\\"
@@ -175,10 +183,10 @@ reflow_type = \\"fixed\\"
 }"
 `;
 
-exports[`converts dashbboards correctly 2`] = `
+exports[`converts dashbboards correctly v2 1`] = `
 "resource \\"datadog_dashboard\\" \\"dashboard_2\\" {
 title = \\"DueDiligence - KYBD - Business\\"
-description = \\"\\"
+description = \\"## Managed by Terraform\\"
 
 widget {
 
@@ -208,7 +216,7 @@ aggregator = \\"sum\\"
 data_source = \\"metrics\\"
 name = \\"query1\\"
 query = <<EOF
-max:dd_kybd_kyckr.Create_Order{$aws_account,!result:product_price_exceeded}.rollup(count)
+max:dd_kybd_kyckr.Create_Order{$aws_account,result:order_created}.rollup(count)
 
 EOF
 }}
@@ -246,6 +254,7 @@ name = \\"query1\\"
 query = <<EOF
 max:dd_kybd_kyckr.Create_Order{$aws_account,result:product_price_exceeded}.rollup(count)
 
+
 EOF
 }}
 }
@@ -263,9 +272,8 @@ y = 0
 widget {
 
 timeseries_definition {
-legend_columns = [\\"avg\\",\\"min\\",\\"max\\",\\"value\\",\\"sum\\"]
+legend_columns = [\\"value\\",\\"avg\\",\\"sum\\",\\"min\\",\\"max\\"]
 legend_layout = \\"vertical\\"
-
 
 request {
 display_type = \\"bars\\"
@@ -282,7 +290,8 @@ query {
 data_source = \\"metrics\\"
 name = \\"query1\\"
 query = <<EOF
-avg:dd_kybd_kyckr.Create_Order{$aws_account,!result:product_price_exceeded} by {country}
+avg:dd_kybd_kyckr.Create_Order{$aws_account,result:order_created} by {country}
+
 
 EOF
 }}
@@ -299,7 +308,6 @@ title_align = \\"left\\"
 title_size = \\"16\\"
 yaxis {
 include_zero = true
-label = \\"\\"
 max = \\"auto\\"
 min = \\"auto\\"
 scale = \\"linear\\"
@@ -315,9 +323,8 @@ y = 1
 widget {
 
 timeseries_definition {
-legend_columns = [\\"avg\\",\\"max\\",\\"value\\",\\"sum\\",\\"min\\"]
+legend_columns = [\\"value\\",\\"avg\\",\\"sum\\",\\"min\\",\\"max\\"]
 legend_layout = \\"vertical\\"
-
 
 request {
 display_type = \\"bars\\"
@@ -334,7 +341,8 @@ query {
 data_source = \\"metrics\\"
 name = \\"query1\\"
 query = <<EOF
-avg:dd_kybd_kyckr.Create_Order{result:product_price_exceeded,$aws_account} by {country}
+avg:dd_kybd_kyckr.Create_Order{$aws_account,result:product_price_exceeded} by {country}
+
 
 EOF
 }}
@@ -351,7 +359,6 @@ title_align = \\"left\\"
 title_size = \\"16\\"
 yaxis {
 include_zero = true
-label = \\"\\"
 max = \\"auto\\"
 min = \\"auto\\"
 scale = \\"linear\\"
@@ -369,7 +376,7 @@ widget {
 heatmap_definition {
 
 request {
-q = \\"avg:dd_kybd_kyckr.Create_Order{aws_account:cko-dev} by {service,country}.as_count()\\"
+q = \\"avg:dd_kybd_kyckr.Create_Order{$aws_account} by {service,country}.as_count()\\"
 
 style {
 palette = \\"dog_classic\\"
@@ -380,6 +387,7 @@ title = \\"Price Heat Map\\"
 title_align = \\"left\\"
 title_size = \\"16\\"
 yaxis {
+include_zero = false
 min = \\"0\\"
 }
 }
@@ -400,7 +408,8 @@ y = 0
 }
 
 template_variable {
-default = \\"cko-dev\\"
+available_values = []
+default = \\"cko-prod\\"
 name = \\"aws_account\\"
 prefix = \\"aws_account\\"
 }
@@ -431,6 +440,1259 @@ value = \\"cko-qa\\"
 template_variable_preset {
 name = \\"Sandbox\\"
 
+template_variable {
+name = \\"aws_account\\"
+value = \\"cko-sbox\\"
+}
+}
+reflow_type = \\"fixed\\"
+}"
+`;
+
+exports[`converts dashbboards correctly v3 1`] = `
+"resource \\"datadog_dashboard\\" \\"dashboard_dps\\" {
+title = \\"DueDiligence - DPS - Manual\\"
+description = \\"## Managed by Terraform\\"
+
+widget {
+
+group_definition {
+background_color = \\"vivid_purple\\"
+layout_type = \\"ordered\\"
+show_title = true
+title = \\"Alerts & Logs\\"
+
+widget {
+
+query_value_definition {
+autoscale = true
+precision = 0
+
+request {
+
+formula {
+formula_expression  = \\"query1\\"
+}
+
+query {
+
+  metric_query {
+compute = [object Object]
+data_source = \\"logs\\"
+group_by = []
+indexes = [\\"transformation\\"]
+name = \\"query1\\"
+search = [object Object]
+}}
+}
+title = \\"Logs\\"
+title_size = \\"13\\"
+}
+widget_layout {
+height = 1
+width = 2
+x = 0
+y = 0
+}
+}
+widget {
+
+manage_status_definition {
+color_preference = \\"text\\"
+display_format = \\"list\\"
+hide_zero_counts = true
+query = <<EOF
+tag:($monitor_env AND $app_group)
+
+EOF
+show_last_triggered = true
+sort = \\"triggered,desc\\"
+summary_type = \\"combined\\"
+title_size = \\"13\\"
+}
+widget_layout {
+height = 4
+width = 7
+x = 2
+y = 0
+}
+}
+widget {
+
+query_value_definition {
+autoscale = true
+precision = 0
+
+request {
+
+conditional_formats {
+comparator = \\">\\"
+hide_value = false
+palette = \\"white_on_red\\"
+value = 0
+}
+conditional_formats {
+comparator = \\">=\\"
+image_url = \\"https://upload.wikimedia.org/wikipedia/commons/2/22/Animated_fire_by_nevit.gif\\"
+palette = \\"custom_image\\"
+value = 10
+}
+
+formula {
+formula_expression  = \\"query1\\"
+}
+
+query {
+
+  metric_query {
+compute = [object Object]
+data_source = \\"logs\\"
+group_by = []
+indexes = [\\"transformation\\"]
+name = \\"query1\\"
+search = [object Object]
+}}
+}
+title = \\"Fatals\\"
+title_align = \\"center\\"
+title_size = \\"16\\"
+}
+widget_layout {
+height = 1
+width = 1
+x = 9
+y = 0
+}
+}
+widget {
+
+query_value_definition {
+autoscale = true
+precision = 0
+
+request {
+
+conditional_formats {
+comparator = \\">\\"
+hide_value = false
+palette = \\"red_on_white\\"
+value = 0
+}
+
+formula {
+formula_expression  = \\"query1\\"
+}
+
+query {
+
+  metric_query {
+compute = [object Object]
+data_source = \\"logs\\"
+group_by = []
+indexes = [\\"transformation\\"]
+name = \\"query1\\"
+search = [object Object]
+}}
+}
+title = \\"Errors\\"
+title_align = \\"center\\"
+title_size = \\"16\\"
+}
+widget_layout {
+height = 1
+width = 1
+x = 10
+y = 0
+}
+}
+widget {
+
+query_value_definition {
+autoscale = true
+precision = 0
+
+request {
+
+conditional_formats {
+comparator = \\">\\"
+hide_value = false
+palette = \\"yellow_on_white\\"
+value = 0
+}
+
+formula {
+formula_expression  = \\"query1\\"
+}
+
+query {
+
+  metric_query {
+compute = [object Object]
+data_source = \\"logs\\"
+group_by = []
+indexes = [\\"transformation\\"]
+name = \\"query1\\"
+search = [object Object]
+}}
+}
+title = \\"Warnings\\"
+title_align = \\"center\\"
+title_size = \\"16\\"
+}
+widget_layout {
+height = 1
+width = 1
+x = 11
+y = 0
+}
+}
+widget {
+
+timeseries_definition {
+legend_columns = [\\"avg\\",\\"min\\",\\"max\\",\\"value\\",\\"sum\\"]
+legend_layout = \\"auto\\"
+
+
+request {
+display_type = \\"bars\\"
+
+formula {
+formula_expression  = \\"query1\\"
+}
+on_right_yaxis = false
+
+query {
+
+  metric_query {
+compute = [object Object]
+data_source = \\"logs\\"
+group_by = [[object Object]]
+indexes = [\\"*\\"]
+name = \\"query1\\"
+search = [object Object]
+}}
+
+style {
+line_type = \\"solid\\"
+line_width = \\"normal\\"
+palette = \\"dog_classic\\"
+}
+}
+show_legend = true
+title = \\"Alerts Triggered\\"
+title_size = \\"13\\"
+yaxis {
+include_zero = true
+max = \\"auto\\"
+min = \\"auto\\"
+scale = \\"linear\\"
+}
+}
+widget_layout {
+height = 3
+width = 2
+x = 0
+y = 1
+}
+}
+widget {
+
+toplist_definition {
+
+request {
+
+conditional_formats {
+comparator = \\">\\"
+hide_value = false
+palette = \\"yellow_on_white\\"
+value = 0
+}
+
+formula {
+formula_expression  = \\"query1\\"
+limit {
+count = 10
+order = \\"desc\\"
+}
+}
+
+query {
+
+  metric_query {
+compute = [object Object]
+data_source = \\"logs\\"
+group_by = [[object Object]]
+indexes = [\\"transformation\\"]
+name = \\"query1\\"
+search = [object Object]
+}}
+}
+title = \\"StatusCode >= 400\\"
+title_size = \\"13\\"
+}
+widget_layout {
+height = 3
+width = 3
+x = 9
+y = 1
+}
+}
+widget {
+
+log_stream_definition {
+columns = [\\"service\\"]
+indexes = [\\"transformation\\"]
+message_display = \\"expanded-md\\"
+query = <<EOF
+source:due_diligence status:(error OR emergency) $dd_env $app_group
+
+EOF
+show_date_column = true
+show_message_column = true
+sort {
+column = \\"time\\"
+order = \\"desc\\"
+}
+title = \\"Errors\\"
+title_size = \\"16\\"
+}
+widget_layout {
+height = 3
+width = 4
+x = 0
+y = 4
+}
+}
+widget {
+
+timeseries_definition {
+legend_columns = [\\"value\\",\\"avg\\",\\"sum\\",\\"max\\"]
+legend_layout = \\"auto\\"
+
+
+request {
+display_type = \\"bars\\"
+
+formula {
+formula_expression  = \\"query1\\"
+}
+on_right_yaxis = false
+
+query {
+
+  metric_query {
+compute = [object Object]
+data_source = \\"logs\\"
+group_by = [[object Object]]
+indexes = [\\"transformation\\"]
+name = \\"query1\\"
+search = [object Object]
+}}
+
+style {
+palette = \\"warm\\"
+}
+}
+show_legend = true
+title = \\"Error logs by Service\\"
+title_size = \\"13\\"
+yaxis {
+include_zero = true
+max = \\"auto\\"
+min = \\"auto\\"
+scale = \\"linear\\"
+}
+}
+widget_layout {
+height = 3
+width = 5
+x = 4
+y = 4
+}
+}
+widget {
+
+toplist_definition {
+
+request {
+
+formula {
+formula_expression  = \\"query1\\"
+limit {
+count = 10
+order = \\"desc\\"
+}
+}
+
+query {
+
+  metric_query {
+compute = [object Object]
+data_source = \\"logs\\"
+group_by = [[object Object]]
+indexes = [\\"*\\"]
+name = \\"query1\\"
+search = [object Object]
+}}
+}
+title = \\"ApiUser\\"
+title_size = \\"13\\"
+}
+widget_layout {
+height = 3
+width = 3
+x = 9
+y = 4
+}
+}
+}
+widget_layout {
+height = 8
+width = 12
+x = 0
+y = 0
+}
+}
+widget {
+
+group_definition {
+background_color = \\"vivid_yellow\\"
+layout_type = \\"ordered\\"
+show_title = true
+title = \\"Metrics\\"
+
+widget {
+
+note_definition {
+background_color = \\"blue\\"
+content = \\"API Requests\\"
+font_size = \\"18\\"
+show_tick = true
+text_align = \\"center\\"
+tick_edge = \\"right\\"
+tick_pos = \\"50%\\"
+}
+widget_layout {
+height = 2
+width = 1
+x = 0
+y = 0
+}
+}
+widget {
+
+timeseries_definition {
+
+request {
+display_type = \\"bars\\"
+on_right_yaxis = false
+q = \\"max:checkout.http_request{$dd_env,$app_group,http-request-type:inbound,route-name:*} by {route-name}.as_count()\\"
+
+style {
+line_type = \\"solid\\"
+line_width = \\"normal\\"
+palette = \\"purple\\"
+}
+}
+show_legend = true
+title = \\"Request Rate\\"
+title_size = \\"13\\"
+yaxis {
+include_zero = true
+max = \\"auto\\"
+min = \\"auto\\"
+scale = \\"linear\\"
+}
+}
+widget_layout {
+height = 2
+width = 3
+x = 1
+y = 0
+}
+}
+widget {
+
+query_table_definition {
+
+custom_link {
+label = \\"Logs - POST\\"
+link = \\"https://app.datadoghq.com/logs?cols=env%2Cservice%2C%40Properties.CheckId&index=transformation&live=false&messageDisplay=inline&query=env%3A{{$env.value}}%20appgroup%3A{{$app_group.value}}%20%40http.method%3APOST\\"
+}
+custom_link {
+label = \\"Logs - GET\\"
+link = \\"https://app.datadoghq.com/logs?cols=env%2Cservice%2C%40Properties.CheckId&index=transformation&live=false&messageDisplay=inline&query=env%3A{{$env.value}}%20appgroup%3A{{$app_group.value}}%20%40http.method%3AGET\\"
+}
+
+request {
+aggregator = \\"avg\\"
+alias = \\"AVG (MS)\\"
+cell_display_mode = [\\"number\\"]
+q = \\"exclude_null(sum:checkout.http_request_latency{$dd_env AND $app_group AND http-request-type:inbound AND NOT (http-method:get AND $request_path)} by {http-status-code,http-method,request-path}.rollup(max, 10))\\"
+}
+request {
+aggregator = \\"sum\\"
+alias = \\"Requests\\"
+cell_display_mode = [\\"number\\"]
+limit = 10
+order = \\"desc\\"
+q = \\"sum:checkout.http_request{$dd_env AND $app_group AND http-request-type:inbound AND NOT (http-method:get AND $request_path)} by {http-status-code,http-method,request-path}.as_count()\\"
+}
+title = \\"Requests\\"
+title_size = \\"13\\"
+}
+widget_layout {
+height = 2
+width = 5
+x = 4
+y = 0
+}
+}
+widget {
+
+timeseries_definition {
+legend_columns = [\\"value\\",\\"avg\\",\\"sum\\",\\"min\\",\\"max\\"]
+legend_layout = \\"horizontal\\"
+
+request {
+display_type = \\"bars\\"
+
+metadata {
+alias_name = \\"max\\"
+expression = \\"max:checkout.http_request_latency{$dd_env,$app_group,http-request-type:inbound,route-name:*} by {route-name}.rollup(max, 10)\\"
+}
+on_right_yaxis = false
+q = \\"max:checkout.http_request_latency{$dd_env,$app_group,http-request-type:inbound,route-name:*} by {route-name}.rollup(max, 10)\\"
+
+style {
+line_type = \\"solid\\"
+line_width = \\"normal\\"
+palette = \\"purple\\"
+}
+}
+show_legend = true
+title = \\"Request Response Latency (ms)\\"
+title_size = \\"13\\"
+yaxis {
+include_zero = false
+}
+}
+widget_layout {
+height = 2
+width = 3
+x = 9
+y = 0
+}
+}
+widget {
+
+note_definition {
+background_color = \\"blue\\"
+content = \\"Runtime\\"
+font_size = \\"18\\"
+show_tick = true
+text_align = \\"center\\"
+tick_edge = \\"right\\"
+tick_pos = \\"50%\\"
+}
+widget_layout {
+height = 2
+width = 1
+x = 0
+y = 2
+}
+}
+widget {
+
+timeseries_definition {
+legend_columns = [\\"value\\",\\"avg\\",\\"sum\\",\\"max\\"]
+legend_layout = \\"auto\\"
+
+request {
+display_type = \\"line\\"
+
+metadata {
+alias_name = \\"LOH\\"
+expression = \\"avg:system.runtime.loh_size{$dd_env,$app_group} by {application}.as_count()\\"
+}
+on_right_yaxis = false
+q = \\"avg:system.runtime.loh_size{$dd_env,$app_group} by {application}.as_count()\\"
+
+style {
+line_type = \\"solid\\"
+line_width = \\"normal\\"
+palette = \\"cool\\"
+}
+}
+show_legend = true
+live_span = \\"1h\\"
+title = \\"Large Object Heap\\"
+title_size = \\"13\\"
+yaxis {
+include_zero = true
+max = \\"auto\\"
+min = \\"auto\\"
+scale = \\"linear\\"
+}
+}
+widget_layout {
+height = 2
+width = 3
+x = 1
+y = 2
+}
+}
+widget {
+
+timeseries_definition {
+legend_columns = [\\"value\\",\\"avg\\",\\"sum\\",\\"max\\"]
+legend_layout = \\"auto\\"
+
+request {
+display_type = \\"line\\"
+
+metadata {
+alias_name = \\"Threads\\"
+expression = \\"avg:system.runtime.threadpool_thread_count{$dd_env,$app_group} by {application}.as_rate()\\"
+}
+on_right_yaxis = false
+q = \\"avg:system.runtime.threadpool_thread_count{$dd_env,$app_group} by {application}.as_rate()\\"
+
+style {
+line_type = \\"solid\\"
+line_width = \\"normal\\"
+palette = \\"dog_classic\\"
+}
+}
+show_legend = true
+title = \\"Thread Count\\"
+title_size = \\"13\\"
+yaxis {
+include_zero = true
+max = \\"auto\\"
+min = \\"auto\\"
+scale = \\"linear\\"
+}
+}
+widget_layout {
+height = 2
+width = 5
+x = 4
+y = 2
+}
+}
+widget {
+
+timeseries_definition {
+legend_columns = [\\"value\\",\\"avg\\",\\"sum\\",\\"max\\"]
+legend_layout = \\"auto\\"
+
+request {
+display_type = \\"line\\"
+
+metadata {
+alias_name = \\"Gen 2\\"
+expression = \\"sum:system.runtime.gen_2_gc_count{$app_group,$dd_env} by {application}\\"
+}
+on_right_yaxis = false
+q = \\"sum:system.runtime.gen_2_gc_count{$app_group,$dd_env} by {application}\\"
+
+style {
+line_type = \\"solid\\"
+line_width = \\"normal\\"
+palette = \\"warm\\"
+}
+}
+show_legend = true
+title = \\"Generation 2 GC\\"
+title_size = \\"13\\"
+yaxis {
+include_zero = true
+max = \\"auto\\"
+min = \\"auto\\"
+scale = \\"linear\\"
+}
+}
+widget_layout {
+height = 2
+width = 3
+x = 9
+y = 2
+}
+}
+widget {
+
+note_definition {
+background_color = \\"blue\\"
+content = \\"Heartbeat \\"
+font_size = \\"18\\"
+show_tick = true
+text_align = \\"center\\"
+tick_edge = \\"right\\"
+tick_pos = \\"50%\\"
+}
+widget_layout {
+height = 2
+width = 1
+x = 0
+y = 4
+}
+}
+widget {
+
+timeseries_definition {
+legend_columns = [\\"avg\\",\\"min\\",\\"max\\",\\"value\\",\\"sum\\"]
+legend_layout = \\"auto\\"
+
+marker {
+display_type = \\"ok bold\\"
+label = \\" Healthy \\"
+value = \\"y = 1\\"
+}
+marker {
+display_type = \\"error dashed\\"
+value = \\"0 < y < 1\\"
+}
+
+request {
+display_type = \\"line\\"
+
+formula {
+alias = \\"Healthy\\"
+formula_expression  = \\"moving_rollup(query1, 300, \\"max\\")\\"
+}
+on_right_yaxis = false
+
+query {
+
+  metric_query {
+data_source = \\"metrics\\"
+name = \\"query1\\"
+query = <<EOF
+avg:checkout.due_diligence_health_probe_healthy{$dd_env,$app_group} by {application}.as_count()
+
+EOF
+}}
+
+style {
+line_type = \\"solid\\"
+line_width = \\"normal\\"
+palette = \\"dog_classic\\"
+}
+}
+show_legend = true
+live_span = \\"1d\\"
+title = \\" \\"
+title_size = \\"13\\"
+yaxis {
+include_zero = false
+min = \\"0\\"
+}
+}
+widget_layout {
+height = 2
+width = 3
+x = 1
+y = 4
+}
+}
+widget {
+
+query_table_definition {
+has_search_bar = \\"auto\\"
+
+request {
+
+formula {
+alias = \\"Healthy\\"
+
+conditional_formats {
+comparator = \\">\\"
+hide_value = false
+palette = \\"black_on_light_green\\"
+value = 0
+}
+formula_expression  = \\"default_zero(query1)\\"
+limit {
+count = 10
+order = \\"desc\\"
+}
+}
+formula {
+alias = \\"Unhealthy\\"
+
+conditional_formats {
+comparator = \\">\\"
+hide_value = false
+palette = \\"black_on_light_yellow\\"
+value = 0
+}
+formula_expression  = \\"default_zero(query2)\\"
+}
+formula {
+alias = \\"Degraded\\"
+
+conditional_formats {
+comparator = \\">\\"
+hide_value = false
+palette = \\"black_on_light_red\\"
+value = 0
+}
+formula_expression  = \\"default_zero(query3)\\"
+}
+
+query {
+
+  metric_query {
+aggregator = \\"last\\"
+data_source = \\"metrics\\"
+name = \\"query1\\"
+query = <<EOF
+max:checkout.due_diligence_health_probe_healthy{$dd_env,$app_group} by {application}.as_count()
+
+EOF
+}}
+query {
+
+  metric_query {
+aggregator = \\"last\\"
+data_source = \\"metrics\\"
+name = \\"query2\\"
+query = <<EOF
+max:checkout.due_diligence_health_probe_unhealthy{$dd_env,$app_group} by {application}.as_count()
+
+EOF
+}}
+query {
+
+  metric_query {
+aggregator = \\"last\\"
+data_source = \\"metrics\\"
+name = \\"query3\\"
+query = <<EOF
+max:checkout.due_diligence_health_probe_degraded{$dd_env,$app_group} by {application}.as_count()
+
+EOF
+}}
+}
+live_span = \\"1d\\"
+title = \\" \\"
+title_size = \\"13\\"
+}
+widget_layout {
+height = 2
+width = 5
+x = 4
+y = 4
+}
+}
+}
+widget_layout {
+height = 7
+is_column_break = true
+width = 12
+x = 0
+y = 8
+}
+}
+widget {
+
+group_definition {
+background_color = \\"vivid_orange\\"
+layout_type = \\"ordered\\"
+show_title = true
+title = \\"Infra (AWS) - ECS Services\\"
+
+widget {
+
+query_table_definition {
+has_search_bar = \\"auto\\"
+
+request {
+
+formula {
+alias = \\"Running\\"
+
+conditional_formats {
+comparator = \\">=\\"
+hide_value = false
+palette = \\"green_on_white\\"
+value = 1
+}
+conditional_formats {
+comparator = \\"<\\"
+hide_value = false
+palette = \\"white_on_red\\"
+value = 1
+}
+formula_expression  = \\"query1\\"
+limit {
+count = 10
+order = \\"desc\\"
+}
+}
+formula {
+alias = \\"Desired\\"
+
+conditional_formats {
+comparator = \\">\\"
+custom_bg_color = \\"#033023\\"
+custom_fg_color = \\"#3b1212\\"
+hide_value = false
+palette = \\"custom_bg\\"
+value = 0
+}
+formula_expression  = \\"query2\\"
+}
+formula {
+alias = \\"Pending\\"
+
+conditional_formats {
+comparator = \\">\\"
+custom_bg_color = \\"#32023b\\"
+hide_value = false
+palette = \\"yellow_on_white\\"
+value = 0
+}
+conditional_formats {
+comparator = \\"<=\\"
+hide_value = false
+palette = \\"custom_bg\\"
+value = 0
+}
+formula_expression  = \\"query3\\"
+}
+
+query {
+
+  metric_query {
+aggregator = \\"last\\"
+data_source = \\"metrics\\"
+name = \\"query1\\"
+query = <<EOF
+min:aws.ecs.service.running{$aws_env,$service_name} by {servicename}
+
+EOF
+}}
+query {
+
+  metric_query {
+aggregator = \\"last\\"
+data_source = \\"metrics\\"
+name = \\"query2\\"
+query = <<EOF
+min:aws.ecs.service.desired{$aws_env,$service_name} by {servicename}
+
+EOF
+}}
+query {
+
+  metric_query {
+aggregator = \\"last\\"
+data_source = \\"metrics\\"
+name = \\"query3\\"
+query = <<EOF
+min:aws.ecs.service.pending{$aws_env,$service_name} by {servicename}
+
+EOF
+}}
+}
+title = \\"Instances\\"
+title_size = \\"13\\"
+}
+widget_layout {
+height = 2
+width = 4
+x = 0
+y = 0
+}
+}
+widget {
+
+timeseries_definition {
+legend_columns = [\\"value\\",\\"avg\\",\\"sum\\",\\"max\\"]
+legend_layout = \\"auto\\"
+
+
+request {
+display_type = \\"line\\"
+
+formula {
+formula_expression  = \\"query1\\"
+}
+on_right_yaxis = false
+
+query {
+
+  metric_query {
+data_source = \\"metrics\\"
+name = \\"query1\\"
+query = <<EOF
+avg:aws.ecs.service.cpuutilization{$aws_env,$service_name} by {servicename}
+
+EOF
+}}
+
+style {
+line_type = \\"solid\\"
+line_width = \\"normal\\"
+palette = \\"dog_classic\\"
+}
+}
+request {
+display_type = \\"line\\"
+
+formula {
+formula_expression  = \\"query1\\"
+}
+on_right_yaxis = false
+
+query {
+
+  metric_query {
+data_source = \\"metrics\\"
+name = \\"query1\\"
+query = <<EOF
+max:aws.ecs.service.cpuutilization.maximum{$aws_env,$service_name} by {servicename}
+
+EOF
+}}
+
+style {
+line_type = \\"dashed\\"
+line_width = \\"thin\\"
+palette = \\"grey\\"
+}
+}
+show_legend = true
+title = \\"CPU Utilization\\"
+title_size = \\"13\\"
+yaxis {
+include_zero = true
+max = \\"auto\\"
+min = \\"auto\\"
+scale = \\"linear\\"
+}
+}
+widget_layout {
+height = 4
+width = 4
+x = 4
+y = 0
+}
+}
+widget {
+
+timeseries_definition {
+legend_columns = [\\"avg\\",\\"min\\",\\"max\\",\\"value\\",\\"sum\\"]
+legend_layout = \\"auto\\"
+
+
+request {
+display_type = \\"line\\"
+
+formula {
+formula_expression  = \\"query1\\"
+}
+on_right_yaxis = false
+
+query {
+
+  metric_query {
+data_source = \\"metrics\\"
+name = \\"query1\\"
+query = <<EOF
+avg:aws.ecs.service.memory_utilization{$aws_env,$service_name} by {servicename}
+
+EOF
+}}
+
+style {
+line_type = \\"solid\\"
+line_width = \\"normal\\"
+palette = \\"dog_classic\\"
+}
+}
+show_legend = true
+title = \\"Memory Utilization\\"
+title_size = \\"13\\"
+yaxis {
+include_zero = true
+max = \\"auto\\"
+min = \\"auto\\"
+scale = \\"linear\\"
+}
+}
+widget_layout {
+height = 4
+width = 4
+x = 8
+y = 0
+}
+}
+widget {
+
+timeseries_definition {
+legend_columns = [\\"value\\",\\"avg\\",\\"sum\\",\\"max\\"]
+legend_layout = \\"auto\\"
+
+
+request {
+display_type = \\"line\\"
+
+formula {
+formula_expression  = \\"query1\\"
+}
+on_right_yaxis = false
+
+query {
+
+  metric_query {
+data_source = \\"metrics\\"
+name = \\"query1\\"
+query = <<EOF
+min:aws.ecs.service.running{$aws_env,$service_name} by {servicename}
+
+EOF
+}}
+
+style {
+line_type = \\"solid\\"
+line_width = \\"normal\\"
+palette = \\"dog_classic\\"
+}
+}
+show_legend = true
+title = \\" Running Tasks\\"
+title_size = \\"13\\"
+yaxis {
+include_zero = true
+max = \\"auto\\"
+min = \\"auto\\"
+scale = \\"linear\\"
+}
+}
+widget_layout {
+height = 2
+width = 4
+x = 0
+y = 2
+}
+}
+}
+widget_layout {
+height = 5
+width = 12
+x = 0
+y = 15
+}
+}
+
+template_variable {
+available_values = []
+default = \\"prod\\"
+name = \\"dd_env\\"
+prefix = \\"env\\"
+}
+template_variable {
+available_values = []
+default = \\"dd-dps\\"
+name = \\"app_group\\"
+prefix = \\"appgroup\\"
+}
+template_variable {
+available_values = []
+default = \\"prod\\"
+name = \\"aws_env\\"
+prefix = \\"environment\\"
+}
+template_variable {
+available_values = []
+default = \\"prod\\"
+name = \\"monitor_env\\"
+prefix = \\"monitor_env\\"
+}
+template_variable {
+available_values = []
+default = \\"cko-prod\\"
+name = \\"aws_account\\"
+prefix = \\"aws_account\\"
+}
+template_variable {
+available_values = []
+default = \\"/dps\\"
+name = \\"request_path\\"
+prefix = \\"request-path\\"
+}
+template_variable {
+available_values = []
+default = \\"dd-dps*\\"
+name = \\"service_name\\"
+prefix = \\"servicename\\"
+}
+layout_type = \\"ordered\\"
+is_read_only = false
+notify_list = []
+
+template_variable_preset {
+name = \\"Dev\\"
+
+template_variable {
+name = \\"dd_env\\"
+value = \\"dev\\"
+}
+template_variable {
+name = \\"aws_env\\"
+value = \\"dev\\"
+}
+template_variable {
+name = \\"monitor_env\\"
+value = \\"dev\\"
+}
+template_variable {
+name = \\"aws_account\\"
+value = \\"cko-dev\\"
+}
+}
+template_variable_preset {
+name = \\"Prod\\"
+
+}
+template_variable_preset {
+name = \\"QA\\"
+
+template_variable {
+name = \\"dd_env\\"
+value = \\"qa\\"
+}
+template_variable {
+name = \\"aws_env\\"
+value = \\"qa\\"
+}
+template_variable {
+name = \\"monitor_env\\"
+value = \\"qa\\"
+}
+template_variable {
+name = \\"aws_account\\"
+value = \\"cko-qa\\"
+}
+}
+template_variable_preset {
+name = \\"Sandbox\\"
+
+template_variable {
+name = \\"dd_env\\"
+value = \\"sandbox\\"
+}
+template_variable {
+name = \\"aws_env\\"
+value = \\"sandbox\\"
+}
+template_variable {
+name = \\"monitor_env\\"
+value = \\"sandbox\\"
+}
 template_variable {
 name = \\"aws_account\\"
 value = \\"cko-sbox\\"

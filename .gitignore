@@ -1,6 +1,7 @@
 *.zip
 .DS_Store
 lib/
+outputs/
 node_modules/
 .idea
 .run

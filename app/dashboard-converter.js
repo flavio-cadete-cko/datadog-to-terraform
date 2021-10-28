@@ -1,9 +1,9 @@
 import {
   assignmentString,
+  queryBlock,
   block,
   blockList,
   convertFromDefinition,
-  queryBlockList,
 } from "./utils.js";
 
 const DASHBOARD = {
@@ -16,31 +16,17 @@ const DASHBOARD = {
   notify_list: (v) => assignmentString("notify_list", v),
   reflow_type: (v) => assignmentString("reflow_type", v),
   restricted_roles: (_) => "// restricted_roles is still in beta",
-  template_variable_presets: (v) =>
-    blockList(v, "template_variable_preset", (k1, v1) =>
-      convertFromDefinition(TEMPLATE_VARIABLE_PRESET, k1, v1)
+  template_variables: (list) =>
+    blockList(list, "template_variable", (k, v) =>
+      convertFromDefinition(TEMPLATE_VARIABLE, k, v)
     ),
-  template_variables: (v) => blockList(v, "template_variable", assignmentString),
+  template_variable_presets: (list) =>
+    blockList(list, "template_variable_preset", (k, v) =>
+      convertFromDefinition(TEMPLATE_VARIABLE_PRESET, k, v)
+    ),
   title: (v) => assignmentString("title", v),
   url: (v) => assignmentString("url", v),
   widgets: (v) => convertWidgets(v),
-};
-
-const EVENT_QUERY = {
-  aggregator: (v) => assignmentString("aggregator", v),
-  compute: (v) => block("compute", v, assignmentString),
-  data_source: (v) => assignmentString("data_source", v),
-  group_by: (v) =>
-    blockList(v, "group_by", (k1, v1) => convertFromDefinition(EVENT_QUERY_GROUP_BY, k1, v1)),
-  indexes: (v) => assignmentString("indexes", v),
-  name: (v) => assignmentString("name", v),
-  search: (v) => block("search", v, assignmentString),
-};
-
-const EVENT_QUERY_GROUP_BY = {
-  facet: (v) => assignmentString("facet", v),
-  limit: (v) => assignmentString("limit", v),
-  sort: (v) => block("sort", v, assignmentString),
 };
 
 const FORMULA = {
@@ -66,7 +52,6 @@ const REQUEST = {
   conditional_formats: (v) => blockList(v, "conditional_formats", assignmentString),
   display_type: (v) => assignmentString("display_type", v),
   fill: (v) => block("fill", v, assignmentString),
-  formulas: (v) => blockList(v, "formula", (k1, v1) => convertFromDefinition(FORMULA, k1, v1)),
   increase_good: (v) => assignmentString("increase_good", v),
   limit: (v) => assignmentString("limit", v),
   log_query: (v) =>
@@ -79,12 +64,21 @@ const REQUEST = {
   order_dir: (v) => assignmentString("order_dir", v),
   process_query: (v) => assignmentString("process_query", v),
   q: (v) => assignmentString("q", v),
-  queries: (v) => queryBlockList(v, assignmentString),
-  response_format: (_) => "", // scalar
+  response_format: (v) => "", // unused
+  formulas: (list) =>
+    blockList(list, "formula", (k, v) => convertFromDefinition(FORMULA, k, v)),
+  queries: (list) => convertQueries(list),
   rum_query: (v) => assignmentString("rum_query", v),
   security_query: (v) => assignmentString("security_query", v),
   show_present: (v) => assignmentString("show_present", v),
   style: (v) => blockList([v], "style", assignmentString),
+};
+
+const TEMPLATE_VARIABLE = {
+  available_values: (_) => "", // deprecated
+  default: (v) => assignmentString("default", v),
+  name: (v) => assignmentString("name", v),
+  prefix: (v) => assignmentString("prefix", v),
 };
 
 const TEMPLATE_VARIABLE_PRESET = {
@@ -171,7 +165,7 @@ const WIDGET_DEFINITION = {
   text_align: (v) => assignmentString("text_align", v),
   tick_edge: (v) => assignmentString("tick_edge", v),
   tick_pos: (v) => assignmentString("tick_pos", v),
-  time: (v) => (!!v.live_span ? assignmentString("live_span", v.live_span) : ""),
+  time: (v) => "", // 3.0.0 deprecated
   time_windows: (v) => assignmentString("time_windows", v),
   title: (v) => assignmentString("title", v),
   title_align: (v) => assignmentString("title_align", v),
@@ -189,27 +183,76 @@ const WIDGET_DEFINITION = {
   yaxis: (v) => block("yaxis", v, assignmentString),
 };
 
-const LOG_QUERY = {
-  compute: (v) => block("compute_query", v, assignmentString),
+const QUERIES_METRIC_QUERY = {
+  compute: (_) => "", // 3.0.0 deprecated
+  aggregator: (v) => assignmentString("aggregator", v),
+  data_source: (v) => assignmentString("data_source", v),
   group_by: (v) =>
-    blockList(v, "group_by", (k1, v1) => convertFromDefinition(GROUP_BY, k1, v1)),
+    blockList(v, "group_by", (k1, v1) => convertFromDefinition(METRIC_QUERY_GROUP_BY, k1, v1)),
+  indexes: (v) => assignmentString("indexes", v),
+  name: (v) => assignmentString("name", v),
+  search: (v) => block("search", v, assignmentString),
+  query: (v) => assignmentString("query", v),
+};
+
+const METRIC_QUERY_GROUP_BY = {
+  facet: (v) => assignmentString("facet", v),
+  limit: (v) => assignmentString("limit", v),
+  sort: (v) => block("sort", v, assignmentString),
+};
+
+const QUERIES_LOG_QUERY = {
+  compute: (_) => "", // 3.0.0 deprecated
+  data_source: (v) => "",
+  group_by: (v) =>
+    blockList(v, "group_by", (k1, v1) => convertFromDefinition(LOG_GROUP_BY, k1, v1)),
+  indexes: (v) => assignmentString("index", v[0]),
+  name: (v) => "",
+  search: (v) => assignmentString("search_query", v.query),
+};
+
+const LOG_QUERY = {
+  compute: (_) => "", // 3.0.0 deprecated
+  group_by: (v) =>
+    blockList(v, "group_by", (k1, v1) => convertFromDefinition(LOG_GROUP_BY, k1, v1)),
   index: (v) => assignmentString("index", v),
+  name: (v) => assignmentString("name", v),
   multi_compute: (v) => blockList(v, "multi_compute", assignmentString),
   search: (v) => assignmentString("search_query", v.query),
   search_query: (v) => assignmentString("search_query", v),
 };
 
-const GROUP_BY = {
+const LOG_GROUP_BY = {
   facet: (v) => assignmentString("facet", v),
   limit: (v) => assignmentString("limit", v),
   sort: (v) => block("sort_query", v, assignmentString),
   sort_query: (v) => block("sort_query", v, assignmentString),
 };
 
-function convertEventQuery(value) {
-  return block("query", value, (_) =>
-    blockList(value, "event_query", (k1, v1) => convertFromDefinition(EVENT_QUERY, k1, v1))
-  );
+export function convertQueries(array) {
+  let result = ["\n"];
+  array.forEach((elem) => {
+    let dataSourceData;
+    switch (elem.data_source) {
+      case "metrics":
+        dataSourceData = queryBlock("metric_query", elem, (k, v) =>
+          convertFromDefinition(QUERIES_METRIC_QUERY, k, v)
+        );
+        break;
+      case "logs":
+        dataSourceData = block("log_query", elem, (k, v) =>
+          convertFromDefinition(QUERIES_LOG_QUERY, k, v)
+        );
+        break;
+      default:
+        console.error(`Unsupported query data_source ${elem.data_source}`);
+        process.exit(1);
+    }
+
+    result.push(dataSourceData);
+  });
+  result = result.join("");
+  return result;
 }
 
 function convertRequests(value) {
@@ -226,7 +269,7 @@ function convertSort(v) {
 }
 
 function convertWidgets(value) {
-  return blockList(value, "widget", (k1, v1) => convertFromDefinition(WIDGET, k1, v1));
+  return blockList(value, "widget", (k, v) => convertFromDefinition(WIDGET, k, v));
 }
 
 function widgetDefinition(contents) {

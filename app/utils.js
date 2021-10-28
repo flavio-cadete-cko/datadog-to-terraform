@@ -36,8 +36,8 @@ export function map(contents, converter) {
   return result;
 }
 
-function queryBlock(name, contents, converter) {
-  return `\nquery {\n\n  ${name} {${map(contents, converter)}\n}}`;
+export function queryBlock(name, contents, converter) {
+  return `\nquery {\n  ${name} {${map(contents, converter)}\n}\n}`;
 }
 
 export function block(name, contents, converter) {
@@ -49,15 +49,6 @@ export function blockList(array, blockName, contentConverter) {
   array.forEach((elem) => {
     result += block(blockName, elem, contentConverter);
   });
-  return result;
-}
-
-export function queryBlockList(array, contentConverter) {
-  let result = ["\n"];
-  array.forEach((elem) => {
-    result.push(queryBlock("metric_query", elem, contentConverter));
-  });
-  result = result.join("");
   return result;
 }
 
